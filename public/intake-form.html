@@ -1,0 +1,619 @@
+<!DOCTYPE html>
+<html lang="he" dir="rtl">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>שאלון קבלת מטופל/ת והצהרת בריאות</title>
+<style>
+  :root {
+    --bg: #F6F5F1;
+    --surface: #FFFFFF;
+    --ink: #26302B;
+    --muted: #6C7A72;
+    --accent: #3E6B54;
+    --accent-ink: #FFFFFF;
+    --accent-soft: #E4EDE7;
+    --line: #DDE2DD;
+    --danger: #A94436;
+  }
+  @media (prefers-color-scheme: dark) {
+    :root {
+      --bg: #171D1A;
+      --surface: #1F2622;
+      --ink: #E7ECE8;
+      --muted: #93A29A;
+      --accent: #7FB79A;
+      --accent-ink: #14201A;
+      --accent-soft: #27352E;
+      --line: #35403A;
+      --danger: #E08373;
+    }
+  }
+  :root[data-theme="dark"] {
+    --bg: #171D1A;
+    --surface: #1F2622;
+    --ink: #E7ECE8;
+    --muted: #93A29A;
+    --accent: #7FB79A;
+    --accent-ink: #14201A;
+    --accent-soft: #27352E;
+    --line: #35403A;
+    --danger: #E08373;
+  }
+  :root[data-theme="light"] {
+    --bg: #F6F5F1;
+    --surface: #FFFFFF;
+    --ink: #26302B;
+    --muted: #6C7A72;
+    --accent: #3E6B54;
+    --accent-ink: #FFFFFF;
+    --accent-soft: #E4EDE7;
+    --line: #DDE2DD;
+    --danger: #A94436;
+  }
+
+  * { box-sizing: border-box; }
+  html { -webkit-text-size-adjust: 100%; }
+  body {
+    margin: 0;
+    background: var(--bg);
+    color: var(--ink);
+    font-family: "Assistant", "Rubik", -apple-system, "Segoe UI", "Arial Hebrew", Arial, sans-serif;
+    font-size: 17px;
+    line-height: 1.6;
+  }
+  .wrap {
+    max-width: 640px;
+    margin: 0 auto;
+    padding: 32px 20px 64px;
+  }
+
+  header.intro { margin-bottom: 28px; }
+  .eyebrow {
+    display: inline-block;
+    font-size: 13px;
+    font-weight: 600;
+    letter-spacing: 0.08em;
+    color: var(--accent);
+    background: var(--accent-soft);
+    border-radius: 999px;
+    padding: 4px 14px;
+    margin-bottom: 14px;
+  }
+  h1 {
+    font-size: 30px;
+    line-height: 1.25;
+    margin: 0 0 12px;
+    font-weight: 700;
+    text-wrap: balance;
+  }
+  .intro p { margin: 0; color: var(--muted); max-width: 60ch; }
+
+  .progress {
+    position: sticky;
+    top: 0;
+    z-index: 5;
+    background: var(--bg);
+    padding: 10px 0 12px;
+    margin-bottom: 6px;
+  }
+  .progress-track {
+    height: 5px;
+    background: var(--line);
+    border-radius: 999px;
+    overflow: hidden;
+  }
+  .progress-fill {
+    height: 100%;
+    width: 0%;
+    background: var(--accent);
+    border-radius: 999px;
+    transition: width 0.3s ease;
+  }
+  @media (prefers-reduced-motion: reduce) {
+    .progress-fill { transition: none; }
+  }
+
+  section.card {
+    background: var(--surface);
+    border: 1px solid var(--line);
+    border-radius: 14px;
+    padding: 24px 22px;
+    margin-bottom: 22px;
+  }
+  .section-label {
+    display: flex;
+    align-items: baseline;
+    gap: 10px;
+    margin-bottom: 4px;
+  }
+  .section-num {
+    font-size: 13px;
+    font-weight: 700;
+    color: var(--accent);
+    letter-spacing: 0.06em;
+  }
+  h2 { font-size: 21px; margin: 0 0 18px; font-weight: 700; }
+
+  .field { margin-bottom: 20px; }
+  .field:last-child { margin-bottom: 0; }
+  label.q, legend.q {
+    display: block;
+    font-weight: 600;
+    margin-bottom: 8px;
+    padding: 0;
+  }
+  .req { color: var(--danger); font-weight: 700; }
+  .hint { font-size: 14px; color: var(--muted); margin: -4px 0 8px; }
+
+  input[type="text"], input[type="tel"], input[type="email"], input[type="number"], textarea {
+    width: 100%;
+    font: inherit;
+    color: var(--ink);
+    background: var(--bg);
+    border: 1px solid var(--line);
+    border-radius: 10px;
+    padding: 11px 14px;
+  }
+  textarea { min-height: 96px; resize: vertical; }
+  input:focus, textarea:focus, button:focus-visible {
+    outline: 2px solid var(--accent);
+    outline-offset: 1px;
+    border-color: var(--accent);
+  }
+
+  fieldset { border: 0; margin: 0 0 20px; padding: 0; }
+  fieldset:last-child { margin-bottom: 0; }
+  .choices { display: flex; flex-direction: column; gap: 8px; }
+  .choice {
+    display: flex;
+    align-items: flex-start;
+    gap: 10px;
+    padding: 10px 12px;
+    border: 1px solid var(--line);
+    border-radius: 10px;
+    background: var(--bg);
+    cursor: pointer;
+  }
+  .choice:has(input:checked) {
+    border-color: var(--accent);
+    background: var(--accent-soft);
+  }
+  .choice input {
+    accent-color: var(--accent);
+    width: 18px;
+    height: 18px;
+    margin-top: 3px;
+    flex-shrink: 0;
+  }
+
+  .subfield { margin-top: 8px; display: none; }
+  .subfield.show { display: block; }
+
+  .scale { display: flex; gap: 8px; }
+  .scale-opt { flex: 1; }
+  .scale-opt input { position: absolute; opacity: 0; pointer-events: none; }
+  .scale-opt span {
+    display: block;
+    text-align: center;
+    padding: 12px 0;
+    border: 1px solid var(--line);
+    border-radius: 10px;
+    background: var(--bg);
+    font-weight: 600;
+    cursor: pointer;
+    font-variant-numeric: tabular-nums;
+  }
+  .scale-opt input:checked + span {
+    background: var(--accent);
+    color: var(--accent-ink);
+    border-color: var(--accent);
+  }
+  .scale-opt input:focus-visible + span {
+    outline: 2px solid var(--accent);
+    outline-offset: 1px;
+  }
+  .scale-ends {
+    display: flex;
+    justify-content: space-between;
+    font-size: 13px;
+    color: var(--muted);
+    margin-top: 6px;
+  }
+
+  .declaration {
+    background: var(--accent-soft);
+    border: 1px solid var(--accent);
+    border-radius: 10px;
+    padding: 16px;
+  }
+  .declaration p { margin: 0 0 12px; font-size: 15px; }
+
+  .actions { margin-top: 8px; }
+  button.primary {
+    width: 100%;
+    font: inherit;
+    font-weight: 700;
+    font-size: 18px;
+    color: var(--accent-ink);
+    background: var(--accent);
+    border: 0;
+    border-radius: 12px;
+    padding: 15px 24px;
+    cursor: pointer;
+  }
+  button.primary:hover { filter: brightness(1.07); }
+  button.primary:disabled { opacity: 0.6; cursor: wait; }
+  button.ghost {
+    font: inherit;
+    font-weight: 600;
+    color: var(--accent);
+    background: transparent;
+    border: 1px solid var(--accent);
+    border-radius: 12px;
+    padding: 12px 20px;
+    cursor: pointer;
+  }
+  .privacy {
+    text-align: center;
+    font-size: 14px;
+    color: var(--muted);
+    margin-top: 14px;
+  }
+
+  #doneScreen, #summaryScreen { display: none; }
+  .done-card {
+    background: var(--surface);
+    border: 1px solid var(--line);
+    border-radius: 14px;
+    padding: 32px 24px;
+    text-align: center;
+  }
+  .done-mark {
+    width: 56px;
+    height: 56px;
+    border-radius: 50%;
+    background: var(--accent-soft);
+    color: var(--accent);
+    font-size: 28px;
+    line-height: 56px;
+    margin: 0 auto 16px;
+  }
+  .summary-box {
+    text-align: right;
+    background: var(--bg);
+    border: 1px solid var(--line);
+    border-radius: 10px;
+    padding: 16px;
+    margin: 18px 0;
+    white-space: pre-wrap;
+    font-size: 15px;
+    max-height: 320px;
+    overflow-y: auto;
+  }
+  .share-row { display: flex; gap: 10px; flex-wrap: wrap; justify-content: center; }
+  .share-row .primary { width: auto; padding: 12px 24px; font-size: 16px; }
+</style>
+</head>
+<body>
+<div class="wrap">
+
+  <header class="intro">
+    <span class="eyebrow">שיאצו · שאלון מקדים</span>
+    <h1>שאלון קבלת מטופל/ת והצהרת בריאות</h1>
+    <p>ברוכים הבאים! כדי להתאים עבורך את הטיפול המדויק והבטוח ביותר, אודה למילוי השאלון הקצר לפני מפגשנו. כל המידע המועבר חסוי לחלוטין ומשמש לצורך המעקב הטיפולי בלבד.</p>
+  </header>
+
+  <div class="progress" aria-hidden="true">
+    <div class="progress-track"><div class="progress-fill" id="progressFill"></div></div>
+  </div>
+
+  <form id="intakeForm" novalidate>
+
+    <!-- חלק 1 -->
+    <section class="card">
+      <div class="section-label"><span class="section-num">חלק 1</span></div>
+      <h2>פרטים אישיים</h2>
+
+      <div class="field">
+        <label class="q" for="fullName">שם מלא <span class="req">*</span></label>
+        <input type="text" id="fullName" name="fullName" required autocomplete="name">
+      </div>
+      <div class="field">
+        <label class="q" for="birthOrAge">תאריך לידה / גיל <span class="req">*</span></label>
+        <input type="text" id="birthOrAge" name="birthOrAge" required>
+      </div>
+      <div class="field">
+        <label class="q" for="phone">טלפון ליצירת קשר <span class="req">*</span></label>
+        <input type="tel" id="phone" name="phone" required autocomplete="tel" inputmode="tel">
+      </div>
+      <div class="field">
+        <label class="q" for="email">כתובת דוא"ל</label>
+        <input type="email" id="email" name="email" autocomplete="email" inputmode="email">
+      </div>
+      <div class="field">
+        <label class="q" for="occupation">עיסוק / מקצוע</label>
+        <input type="text" id="occupation" name="occupation">
+      </div>
+    </section>
+
+    <!-- חלק 2 -->
+    <section class="card">
+      <div class="section-label"><span class="section-num">חלק 2</span></div>
+      <h2>סיבת הפנייה והרקע הטיפולי</h2>
+
+      <div class="field">
+        <label class="q" for="mainComplaint">מהי סיבת הפנייה העיקרית לטיפול? <span class="req">*</span></label>
+        <textarea id="mainComplaint" name="mainComplaint" required></textarea>
+      </div>
+      <div class="field">
+        <label class="q" for="duration">כמה זמן את/ה סובל/ת מבעיה זו?</label>
+        <input type="text" id="duration" name="duration">
+      </div>
+      <div class="field">
+        <label class="q" for="priorTreatment">האם פנית כבר לטיפול רפואי או אלטרנטיבי בנושא? אם כן, איזה?</label>
+        <textarea id="priorTreatment" name="priorTreatment"></textarea>
+      </div>
+    </section>
+
+    <!-- חלק 3 -->
+    <section class="card">
+      <div class="section-label"><span class="section-num">חלק 3</span></div>
+      <h2>רקע רפואי והצהרת בריאות</h2>
+
+      <fieldset>
+        <legend class="q">האם ישנן מחלות כרוניות או אבחנות רפואיות קודמות?</legend>
+        <p class="hint">ניתן לסמן יותר מתשובה אחת</p>
+        <div class="choices" id="conditions">
+          <label class="choice"><input type="checkbox" name="conditions" value="יתר / תת לחץ דם"><span>יתר / תת לחץ דם</span></label>
+          <label class="choice"><input type="checkbox" name="conditions" value="סוכרת / טרום סוכרת"><span>סוכרת / טרום סוכרת</span></label>
+          <label class="choice"><input type="checkbox" name="conditions" value="מחלות לב / כלי דם"><span>מחלות לב / כלי דם</span></label>
+          <label class="choice"><input type="checkbox" name="conditions" value="בעיות במערכת העיכול"><span>בעיות במערכת העיכול (רגישויות, מעי רגיז וכו')</span></label>
+          <label class="choice"><input type="checkbox" name="conditions" value="בעיות במערכת הנשימה"><span>בעיות במערכת הנשימה (אסתמה, קוצר נשימה)</span></label>
+          <label class="choice"><input type="checkbox" name="conditions" value="מחלות אוטואימוניות"><span>מחלות אוטואימוניות</span></label>
+          <label class="choice"><input type="checkbox" name="conditions" value="אסטמה / אלרגיות"><span>אסטמה / אלרגיות</span></label>
+          <label class="choice"><input type="checkbox" name="conditions" value="בעיות שלד-שריר / פריצות דיסק / כאבים כרוניים"><span>בעיות שלד-שריר / פריצות דיסק / כאבים כרוניים</span></label>
+          <label class="choice"><input type="checkbox" name="conditions" value="בעיות תפקודי כבד / כליות"><span>בעיות תפקודי כבד / כליות</span></label>
+          <label class="choice"><input type="checkbox" name="conditions" value="אונקולוגיה (בהווה או בעבר)"><span>אונקולוגיה (בהווה או בעבר)</span></label>
+          <label class="choice"><input type="checkbox" name="conditions" value="אחר" id="condOther"><span>אחר (נא לפרט)</span></label>
+        </div>
+        <div class="subfield" id="condOtherField">
+          <input type="text" name="conditionsOther" placeholder="נא לפרט…" aria-label="פירוט מחלות אחרות">
+        </div>
+      </fieldset>
+
+      <div class="field">
+        <label class="q" for="medications">האם את/ה נוטל/ת תרופות קבועות או תוספי תזונה?</label>
+        <p class="hint">נא לפרט שמות ומינונים</p>
+        <textarea id="medications" name="medications"></textarea>
+      </div>
+      <div class="field">
+        <label class="q" for="surgeries">האם עברת ניתוחים, אשפוזים או פציעות משמעותיות בעבר?</label>
+        <textarea id="surgeries" name="surgeries"></textarea>
+      </div>
+
+      <fieldset>
+        <legend class="q">הריון / הנקה (לנשים)</legend>
+        <div class="choices">
+          <label class="choice"><input type="radio" name="pregnancy" value="לא רלוונטי" checked><span>לא רלוונטי</span></label>
+          <label class="choice"><input type="radio" name="pregnancy" value="בהריון" id="pregYes"><span>בהריון (נא לציין שבוע)</span></label>
+          <label class="choice"><input type="radio" name="pregnancy" value="מניקה"><span>מניקה</span></label>
+          <label class="choice"><input type="radio" name="pregnancy" value="מנסה להרות"><span>מנסה להרות</span></label>
+        </div>
+        <div class="subfield" id="pregWeekField">
+          <input type="number" name="pregnancyWeek" min="1" max="42" placeholder="שבוע הריון" aria-label="שבוע הריון" inputmode="numeric">
+        </div>
+      </fieldset>
+    </section>
+
+    <!-- חלק 4 -->
+    <section class="card">
+      <div class="section-label"><span class="section-num">חלק 4</span></div>
+      <h2>אורח חיים, אנרגיה ואיזון</h2>
+
+      <fieldset>
+        <legend class="q">איך היית מתאר/ת את איכות השינה שלך?</legend>
+        <div class="choices">
+          <label class="choice"><input type="radio" name="sleep" value="מצוינת ורציפה"><span>מצוינת ורציפה</span></label>
+          <label class="choice"><input type="radio" name="sleep" value="קושי בהרדמות"><span>קושי בהרדמות</span></label>
+          <label class="choice"><input type="radio" name="sleep" value="התעוררויות מרובות בלילה"><span>התעוררויות מרובות בלילה</span></label>
+          <label class="choice"><input type="radio" name="sleep" value="עייפות בלתי פוסקת גם לאחר שינה"><span>עייפות בלתי פוסקת גם לאחר שינה</span></label>
+        </div>
+      </fieldset>
+
+      <fieldset>
+        <legend class="q">איך היית מתאר/ת את רמת הסטרס/המתח ביום-יום?</legend>
+        <div class="scale" role="radiogroup" aria-label="רמת מתח מ-1 עד 5">
+          <label class="scale-opt"><input type="radio" name="stress" value="1"><span>1</span></label>
+          <label class="scale-opt"><input type="radio" name="stress" value="2"><span>2</span></label>
+          <label class="scale-opt"><input type="radio" name="stress" value="3"><span>3</span></label>
+          <label class="scale-opt"><input type="radio" name="stress" value="4"><span>4</span></label>
+          <label class="scale-opt"><input type="radio" name="stress" value="5"><span>5</span></label>
+        </div>
+        <div class="scale-ends"><span>1 = נמוכה מאוד</span><span>5 = גבוהה מאוד</span></div>
+      </fieldset>
+
+      <fieldset>
+        <legend class="q">תזונה ועיכול</legend>
+        <p class="hint">ניתן לסמן יותר מתשובה אחת</p>
+        <div class="choices">
+          <label class="choice"><input type="checkbox" name="digestion" value="עיכול תקין ויציאות סדירות"><span>עיכול תקין ויציאות סדירות</span></label>
+          <label class="choice"><input type="checkbox" name="digestion" value="נפיחות / גזים לאחר ארוחות"><span>נפיחות / גזים לאחר ארוחות</span></label>
+          <label class="choice"><input type="checkbox" name="digestion" value="עצירות / יציאות לא סדירות"><span>עצירות / יציאות לא סדירות</span></label>
+          <label class="choice"><input type="checkbox" name="digestion" value="צרבות / אי-נוחות בקיבה"><span>צרבות / אי-נוחות בקיבה</span></label>
+          <label class="choice"><input type="checkbox" name="digestion" value="תיאבון ירוד / מוגבר מאוד"><span>תיאבון ירוד / מוגבר מאוד</span></label>
+        </div>
+      </fieldset>
+
+      <div class="field">
+        <label class="q" for="activity">רמת פעילות גופנית שבועית</label>
+        <input type="text" id="activity" name="activity" placeholder="למשל: הליכה פעמיים בשבוע, יוגה…">
+      </div>
+    </section>
+
+    <!-- חלק 5 -->
+    <section class="card">
+      <div class="section-label"><span class="section-num">חלק 5</span></div>
+      <h2>הצהרה ואישור</h2>
+
+      <div class="declaration">
+        <p>אני מצהיר/ה כי כל הפרטים שמסרתי בשאלון זה מדויקים ונכונים לפי מיטב ידיעתי. ידוע לי כי הטיפול אינו מחליף ייעוץ או טיפול רפואי קונבנציונלי במידת הצורך.</p>
+        <label class="choice"><input type="checkbox" id="declaration" name="declaration" required><span>אני מאשר/ת ומצהיר/ה על נכונות הפרטים. <span class="req">*</span></span></label>
+      </div>
+    </section>
+
+    <div class="actions">
+      <button type="submit" class="primary" id="submitBtn">שליחת השאלון</button>
+      <p class="privacy">🔒 המידע נשמר בסודיות מלאה ומשמש למעקב הטיפולי בלבד.</p>
+    </div>
+  </form>
+
+  <!-- מסך תודה (נשלח לשרת) -->
+  <div id="doneScreen">
+    <div class="done-card">
+      <div class="done-mark">✓</div>
+      <h2>השאלון נשלח בהצלחה!</h2>
+      <p>תודה רבה על מילוי השאלון. נתראה במפגש הקרוב 🌿</p>
+    </div>
+  </div>
+
+  <!-- מסך סיכום (ללא שרת - שליחה ידנית) -->
+  <div id="summaryScreen">
+    <div class="done-card">
+      <div class="done-mark">✓</div>
+      <h2>השאלון מולא בהצלחה!</h2>
+      <p>נותר רק לשלוח את הסיכום למטפל/ת — בוואטסאפ או בהעתקה:</p>
+      <div class="summary-box" id="summaryText"></div>
+      <div class="share-row">
+        <a id="waShare" class="primary" style="text-decoration:none; display:inline-block; background:var(--accent); color:var(--accent-ink); border-radius:12px; padding:12px 24px; font-weight:700;">שליחה בוואטסאפ</a>
+        <button type="button" class="ghost" id="copyBtn">העתקת הסיכום</button>
+      </div>
+    </div>
+  </div>
+
+</div>
+
+<script>
+(function () {
+  var form = document.getElementById("intakeForm");
+  var fill = document.getElementById("progressFill");
+
+  // שדות מותנים
+  function bindToggle(triggerId, fieldId, isRadioGroup, groupName) {
+    var field = document.getElementById(fieldId);
+    function update() {
+      var on = document.getElementById(triggerId).checked;
+      field.classList.toggle("show", on);
+      if (!on) field.querySelector("input").value = "";
+    }
+    if (isRadioGroup) {
+      form.querySelectorAll('input[name="' + groupName + '"]').forEach(function (r) {
+        r.addEventListener("change", update);
+      });
+    } else {
+      document.getElementById(triggerId).addEventListener("change", update);
+    }
+  }
+  bindToggle("condOther", "condOtherField", false);
+  bindToggle("pregYes", "pregWeekField", true, "pregnancy");
+
+  // סרגל התקדמות - לפי שדות חובה שמולאו
+  var requiredIds = ["fullName", "birthOrAge", "phone", "mainComplaint", "declaration"];
+  function updateProgress() {
+    var done = requiredIds.filter(function (id) {
+      var el = document.getElementById(id);
+      return el.type === "checkbox" ? el.checked : el.value.trim() !== "";
+    }).length;
+    fill.style.width = Math.round((done / requiredIds.length) * 100) + "%";
+  }
+  form.addEventListener("input", updateProgress);
+  form.addEventListener("change", updateProgress);
+
+  function collect() {
+    function val(id) { return document.getElementById(id).value.trim(); }
+    function checked(name) {
+      return Array.prototype.map.call(
+        form.querySelectorAll('input[name="' + name + '"]:checked'),
+        function (el) { return el.value; }
+      );
+    }
+    function radio(name) {
+      var el = form.querySelector('input[name="' + name + '"]:checked');
+      return el ? el.value : "";
+    }
+    return {
+      submittedAt: new Date().toISOString(),
+      "שם מלא": val("fullName"),
+      "תאריך לידה / גיל": val("birthOrAge"),
+      "טלפון": val("phone"),
+      "דוא\"ל": val("email"),
+      "עיסוק": val("occupation"),
+      "סיבת הפנייה": val("mainComplaint"),
+      "משך הבעיה": val("duration"),
+      "טיפולים קודמים": val("priorTreatment"),
+      "מחלות / אבחנות": checked("conditions"),
+      "פירוט אחר": form.querySelector('input[name="conditionsOther"]').value.trim(),
+      "תרופות ותוספים": val("medications"),
+      "ניתוחים / אשפוזים / פציעות": val("surgeries"),
+      "הריון / הנקה": radio("pregnancy"),
+      "שבוע הריון": form.querySelector('input[name="pregnancyWeek"]').value,
+      "איכות שינה": radio("sleep"),
+      "רמת מתח (1-5)": radio("stress"),
+      "תזונה ועיכול": checked("digestion"),
+      "פעילות גופנית": val("activity"),
+      "הצהרת בריאות": "אושרה"
+    };
+  }
+
+  function buildSummary(data) {
+    var lines = ["שאלון קבלת מטופל/ת - שיאצו", "----------------------------"];
+    Object.keys(data).forEach(function (key) {
+      if (key === "submittedAt") return;
+      var v = data[key];
+      if (Array.isArray(v)) v = v.join(", ");
+      if (v) lines.push(key + ": " + v);
+    });
+    return lines.join("\n");
+  }
+
+  function showScreen(id) {
+    form.style.display = "none";
+    document.querySelector(".progress").style.display = "none";
+    document.getElementById(id).style.display = "block";
+    window.scrollTo({ top: 0 });
+  }
+
+  form.addEventListener("submit", function (e) {
+    e.preventDefault();
+    if (!form.reportValidity()) return;
+
+    var btn = document.getElementById("submitBtn");
+    btn.disabled = true;
+    btn.textContent = "שולח…";
+    var data = collect();
+
+    fetch("/api/intake", {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify(data)
+    }).then(function (res) {
+      if (!res.ok) throw new Error("server error");
+      showScreen("doneScreen");
+    }).catch(function () {
+      // אין שרת (למשל: הטופס נפתח כקובץ) - מציגים סיכום לשליחה ידנית
+      var summary = buildSummary(data);
+      document.getElementById("summaryText").textContent = summary;
+      document.getElementById("waShare").href =
+        "https://wa.me/?text=" + encodeURIComponent(summary);
+      document.getElementById("copyBtn").addEventListener("click", function () {
+        navigator.clipboard.writeText(summary).then(function () {
+          document.getElementById("copyBtn").textContent = "הועתק ✓";
+        });
+      });
+      showScreen("summaryScreen");
+    });
+  });
+})();
+</script>
+</body>
+</html>
