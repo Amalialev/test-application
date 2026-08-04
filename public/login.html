@@ -1,0 +1,93 @@
+<!DOCTYPE html>
+<html lang="he" dir="rtl">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>כניסה · יומן טיפולים</title>
+<style>
+  :root {
+    --bg: #F6F5F1; --surface: #FFFFFF; --ink: #26302B; --muted: #6C7A72;
+    --accent: #3E6B54; --accent-ink: #FFFFFF; --accent-soft: #E4EDE7;
+    --line: #DDE2DD; --danger: #A94436;
+  }
+  @media (prefers-color-scheme: dark) {
+    :root {
+      --bg: #171D1A; --surface: #1F2622; --ink: #E7ECE8; --muted: #93A29A;
+      --accent: #7FB79A; --accent-ink: #14201A; --accent-soft: #27352E;
+      --line: #35403A; --danger: #E08373;
+    }
+  }
+  :root[data-theme="dark"] {
+    --bg: #171D1A; --surface: #1F2622; --ink: #E7ECE8; --muted: #93A29A;
+    --accent: #7FB79A; --accent-ink: #14201A; --accent-soft: #27352E;
+    --line: #35403A; --danger: #E08373;
+  }
+  :root[data-theme="light"] {
+    --bg: #F6F5F1; --surface: #FFFFFF; --ink: #26302B; --muted: #6C7A72;
+    --accent: #3E6B54; --accent-ink: #FFFFFF; --accent-soft: #E4EDE7;
+    --line: #DDE2DD; --danger: #A94436;
+  }
+  * { box-sizing: border-box; }
+  body {
+    margin: 0; min-height: 100vh;
+    display: flex; align-items: center; justify-content: center;
+    background: var(--bg); color: var(--ink);
+    font-family: "Assistant", "Rubik", -apple-system, "Segoe UI", "Arial Hebrew", Arial, sans-serif;
+    padding: 20px;
+  }
+  .card {
+    background: var(--surface);
+    border: 1px solid var(--line);
+    border-radius: 16px;
+    padding: 32px 28px;
+    width: 100%;
+    max-width: 360px;
+    text-align: center;
+  }
+  .mark { font-size: 34px; margin-bottom: 8px; }
+  h1 { font-size: 20px; margin: 0 0 4px; }
+  p { color: var(--muted); font-size: 14.5px; margin: 0 0 20px; }
+  input {
+    width: 100%; font: inherit; color: var(--ink);
+    background: var(--bg); border: 1px solid var(--line);
+    border-radius: 10px; padding: 11px 14px;
+    text-align: center;
+  }
+  input:focus, button:focus-visible { outline: 2px solid var(--accent); outline-offset: 1px; }
+  button {
+    width: 100%; margin-top: 12px;
+    font: inherit; font-weight: 700; font-size: 16px;
+    color: var(--accent-ink); background: var(--accent);
+    border: 0; border-radius: 10px; padding: 12px; cursor: pointer;
+  }
+  button:hover { filter: brightness(1.07); }
+  .err { color: var(--danger); font-size: 14px; margin-top: 10px; min-height: 20px; }
+</style>
+</head>
+<body>
+  <form class="card" id="loginForm">
+    <div class="mark">🌿</div>
+    <h1>יומן טיפולים</h1>
+    <p>אזור זה מיועד למטפלת בלבד</p>
+    <input type="password" id="password" placeholder="סיסמה" autocomplete="current-password" autofocus>
+    <button type="submit">כניסה</button>
+    <div class="err" id="err"></div>
+  </form>
+<script>
+  document.getElementById("loginForm").addEventListener("submit", function (e) {
+    e.preventDefault();
+    document.getElementById("err").textContent = "";
+    fetch("/api/login", {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify({ password: document.getElementById("password").value })
+    }).then(function (r) {
+      if (r.ok) { location.href = "/admin.html"; }
+      else { document.getElementById("err").textContent = "סיסמה שגויה, נסי שוב"; }
+    }).catch(function () {
+      document.getElementById("err").textContent = "שגיאת תקשורת - נסי שוב";
+    });
+  });
+</script>
+</body>
+</html>

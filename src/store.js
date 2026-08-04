@@ -1,7 +1,8 @@
 var fs = require("fs");
 var path = require("path");
 
-var dbPath = path.join(__dirname, "..", "data", "db.json");
+var dataDir = process.env.DATA_DIR || path.join(__dirname, "..", "data");
+var dbPath = path.join(dataDir, "db.json");
 
 function load() {
   try {

@@ -1,5 +1,6 @@
 var express = require("express");
 var path = require("path");
+var crypto = require("crypto");
 var store = require("./store");
 
 var app = express();
@@ -7,7 +8,67 @@ var port = process.env.PORT || 3000;
 
 var publicDir = path.join(__dirname, "..", "public");
 
+app.set("trust proxy", 1);
 app.use(express.json({ limit: "500kb" }));
+
+// ---- הגנת סיסמה על אזור הניהול ----
+// כאשר ADMIN_PASSWORD מוגדר (למשל בפריסה לשרת), אזור הניהול וה-API
+// של המטופלות דורשים התחברות. ללא המשתנה (הרצה מקומית) אין הגנה.
+var adminPassword = process.env.ADMIN_PASSWORD || "";
+var sessions = new Set();
+
+function parseCookies(req) {
+  var out = {};
+  (req.headers.cookie || "").split(";").forEach(function (part) {
+    var i = part.indexOf("=");
+    if (i > -1) out[part.slice(0, i).trim()] = part.slice(i + 1).trim();
+  });
+  return out;
+}
+
+function isAuthed(req) {
+  if (!adminPassword) return true;
+  var token = parseCookies(req).session;
+  return !!token && sessions.has(token);
+}
+
+function requireAuth(req, res, next) {
+  if (isAuthed(req)) return next();
+  res.status(401).json({ ok: false, error: "unauthorized" });
+}
+
+app.post("/api/login", (req, res) => {
+  if (!adminPassword) return res.json({ ok: true });
+  var given = Buffer.from(String(req.body.password || ""));
+  var wanted = Buffer.from(adminPassword);
+  var match = given.length === wanted.length && crypto.timingSafeEqual(given, wanted);
+  if (!match) {
+    return setTimeout(function () {
+      res.status(401).json({ ok: false });
+    }, 700);
+  }
+  var token = crypto.randomBytes(24).toString("hex");
+  sessions.add(token);
+  var cookie = "session=" + token + "; HttpOnly; SameSite=Lax; Path=/; Max-Age=2592000";
+  if (req.secure) cookie += "; Secure";
+  res.setHeader("Set-Cookie", cookie);
+  res.json({ ok: true });
+});
+
+app.post("/api/logout", (req, res) => {
+  var token = parseCookies(req).session;
+  if (token) sessions.delete(token);
+  res.setHeader("Set-Cookie", "session=; Path=/; Max-Age=0");
+  res.json({ ok: true });
+});
+
+app.get("/admin.html", (req, res, next) => {
+  if (isAuthed(req)) return next();
+  res.redirect("/login.html");
+});
+
+app.use("/api/patients", requireAuth);
+
 app.use(express.static(publicDir));
 
 app.get("/", (req, res) => {
