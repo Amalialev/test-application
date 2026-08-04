@@ -1,0 +1,654 @@
+<!DOCTYPE html>
+<html lang="he" dir="rtl">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>יומן טיפולים · שיאצו</title>
+<style>
+  :root {
+    --bg: #F6F5F1;
+    --surface: #FFFFFF;
+    --ink: #26302B;
+    --muted: #6C7A72;
+    --accent: #3E6B54;
+    --accent-ink: #FFFFFF;
+    --accent-soft: #E4EDE7;
+    --line: #DDE2DD;
+    --danger: #A94436;
+  }
+  @media (prefers-color-scheme: dark) {
+    :root {
+      --bg: #171D1A; --surface: #1F2622; --ink: #E7ECE8; --muted: #93A29A;
+      --accent: #7FB79A; --accent-ink: #14201A; --accent-soft: #27352E;
+      --line: #35403A; --danger: #E08373;
+    }
+  }
+  :root[data-theme="dark"] {
+    --bg: #171D1A; --surface: #1F2622; --ink: #E7ECE8; --muted: #93A29A;
+    --accent: #7FB79A; --accent-ink: #14201A; --accent-soft: #27352E;
+    --line: #35403A; --danger: #E08373;
+  }
+  :root[data-theme="light"] {
+    --bg: #F6F5F1; --surface: #FFFFFF; --ink: #26302B; --muted: #6C7A72;
+    --accent: #3E6B54; --accent-ink: #FFFFFF; --accent-soft: #E4EDE7;
+    --line: #DDE2DD; --danger: #A94436;
+  }
+
+  * { box-sizing: border-box; }
+  body {
+    margin: 0;
+    background: var(--bg);
+    color: var(--ink);
+    font-family: "Assistant", "Rubik", -apple-system, "Segoe UI", "Arial Hebrew", Arial, sans-serif;
+    font-size: 16px;
+    line-height: 1.55;
+  }
+  .wrap { max-width: 760px; margin: 0 auto; padding: 24px 18px 80px; }
+
+  .topbar {
+    display: flex; align-items: center; justify-content: space-between;
+    gap: 12px; margin-bottom: 20px;
+  }
+  .topbar h1 { font-size: 22px; margin: 0; }
+  .topbar .brand { color: var(--accent); font-weight: 700; }
+  #saveState { font-size: 13px; color: var(--muted); min-width: 60px; text-align: left; }
+
+  .card {
+    background: var(--surface);
+    border: 1px solid var(--line);
+    border-radius: 14px;
+    padding: 18px;
+    margin-bottom: 16px;
+  }
+
+  input[type="text"], input[type="tel"], input[type="date"], textarea, select {
+    width: 100%;
+    font: inherit;
+    color: var(--ink);
+    background: var(--bg);
+    border: 1px solid var(--line);
+    border-radius: 10px;
+    padding: 9px 12px;
+  }
+  textarea { min-height: 72px; resize: vertical; }
+  input:focus, textarea:focus, select:focus, button:focus-visible {
+    outline: 2px solid var(--accent);
+    outline-offset: 1px;
+    border-color: var(--accent);
+  }
+  label.f { display: block; font-weight: 600; font-size: 14.5px; margin: 12px 0 5px; }
+  label.f:first-child { margin-top: 0; }
+  .hint { font-size: 13px; color: var(--muted); margin: 2px 0 6px; }
+
+  button {
+    font: inherit;
+    border-radius: 10px;
+    cursor: pointer;
+    padding: 9px 16px;
+    border: 1px solid var(--line);
+    background: var(--surface);
+    color: var(--ink);
+    font-weight: 600;
+  }
+  button.primary { background: var(--accent); color: var(--accent-ink); border-color: var(--accent); font-weight: 700; }
+  button.primary:hover { filter: brightness(1.07); }
+  button.danger { color: var(--danger); border-color: var(--danger); background: transparent; }
+  button.link { border: 0; background: transparent; color: var(--accent); padding: 4px 6px; }
+
+  /* רשימת מטופלות */
+  .list-tools { display: flex; gap: 10px; margin-bottom: 14px; }
+  .list-tools input { flex: 1; }
+  .patient-row {
+    display: flex; align-items: center; justify-content: space-between; gap: 12px;
+    padding: 14px 16px;
+    background: var(--surface);
+    border: 1px solid var(--line);
+    border-radius: 12px;
+    margin-bottom: 10px;
+    cursor: pointer;
+  }
+  .patient-row:hover { border-color: var(--accent); }
+  .patient-row .p-name { font-weight: 700; }
+  .patient-row .p-sub { font-size: 13px; color: var(--muted); }
+  .badges { display: flex; gap: 6px; flex-wrap: wrap; justify-content: flex-end; }
+  .badge {
+    font-size: 12px; font-weight: 600;
+    background: var(--accent-soft); color: var(--accent);
+    border-radius: 999px; padding: 3px 10px;
+    white-space: nowrap;
+  }
+  .badge.off { background: var(--bg); color: var(--muted); border: 1px solid var(--line); }
+  .empty { text-align: center; color: var(--muted); padding: 40px 0; }
+
+  #newPatientForm { display: none; gap: 10px; margin-bottom: 14px; flex-wrap: wrap; }
+  #newPatientForm.show { display: flex; }
+  #newPatientForm input { flex: 1; min-width: 140px; }
+
+  /* כרטיס מטופלת */
+  .patient-head { display: flex; align-items: center; gap: 10px; margin-bottom: 6px; flex-wrap: wrap; }
+  .patient-head input { font-size: 19px; font-weight: 700; flex: 1; min-width: 160px; }
+  .patient-head input.phone { font-size: 15px; font-weight: 400; max-width: 180px; }
+
+  .tabs {
+    display: flex; gap: 6px; margin: 14px 0 18px;
+    overflow-x: auto; padding-bottom: 2px;
+  }
+  .tab {
+    border: 1px solid var(--line);
+    background: var(--surface);
+    border-radius: 999px;
+    padding: 7px 16px;
+    font-size: 14.5px;
+    white-space: nowrap;
+  }
+  .tab.active { background: var(--accent); color: var(--accent-ink); border-color: var(--accent); }
+
+  h3.sec { font-size: 16.5px; margin: 0 0 10px; color: var(--accent); }
+  .grid2 { display: grid; grid-template-columns: 1fr 1fr; gap: 0 16px; }
+  @media (max-width: 560px) { .grid2 { grid-template-columns: 1fr; } }
+
+  /* שאלון מקדים - תצוגה */
+  .kv { padding: 8px 0; border-bottom: 1px solid var(--line); }
+  .kv:last-child { border-bottom: 0; }
+  .kv .k { font-size: 13px; color: var(--muted); font-weight: 600; }
+  .kv .v { white-space: pre-wrap; }
+  .flagbox {
+    background: var(--accent-soft); border: 1px solid var(--accent);
+    border-radius: 10px; padding: 12px 14px; margin-bottom: 14px;
+  }
+  .flagbox .k { font-weight: 700; color: var(--accent); font-size: 14px; margin-bottom: 4px; }
+
+  /* מעקב טיפולים */
+  .session-head { display: flex; align-items: center; justify-content: space-between; gap: 10px; flex-wrap: wrap; }
+  .session-head .num { font-weight: 700; color: var(--accent); }
+  .receipt {
+    display: inline-flex; align-items: center; gap: 8px;
+    font-weight: 600; font-size: 14.5px; cursor: pointer;
+    padding: 6px 12px; border: 1px solid var(--line); border-radius: 999px;
+  }
+  .receipt input { accent-color: var(--accent); width: 17px; height: 17px; }
+  .receipt:has(input:checked) { background: var(--accent-soft); border-color: var(--accent); }
+
+  .row-actions { display: flex; justify-content: space-between; gap: 10px; margin-top: 14px; flex-wrap: wrap; }
+  .view { display: none; }
+  .view.active { display: block; }
+</style>
+</head>
+<body>
+<div class="wrap">
+
+  <div class="topbar">
+    <h1><span class="brand">🌿 יומן טיפולים</span></h1>
+    <span id="saveState"></span>
+  </div>
+
+  <!-- רשימת מטופלות -->
+  <div id="listView" class="view">
+    <div class="list-tools">
+      <input type="text" id="search" placeholder="חיפוש לפי שם או טלפון…">
+      <button class="primary" id="newPatientBtn">+ מטופלת חדשה</button>
+    </div>
+    <div id="newPatientForm">
+      <input type="text" id="npName" placeholder="שם מלא">
+      <input type="tel" id="npPhone" placeholder="טלפון">
+      <button class="primary" id="npCreate">יצירה</button>
+      <button id="npCancel">ביטול</button>
+    </div>
+    <div id="patientList"></div>
+  </div>
+
+  <!-- כרטיס מטופלת -->
+  <div id="patientView" class="view">
+    <button class="link" id="backBtn">→ חזרה לרשימה</button>
+    <div class="patient-head">
+      <input type="text" id="pName" aria-label="שם המטופלת">
+      <input type="tel" id="pPhone" class="phone" placeholder="טלפון" aria-label="טלפון">
+    </div>
+    <div class="tabs">
+      <button class="tab" data-tab="intake">שאלון מקדים</button>
+      <button class="tab" data-tab="first">טיפול ראשון</button>
+      <button class="tab" data-tab="sessions">מעקב טיפולים</button>
+      <button class="tab" data-tab="notes">הערות וסיכום</button>
+    </div>
+    <div id="tabContent"></div>
+    <div class="row-actions">
+      <span></span>
+      <button class="danger" id="deletePatientBtn">מחיקת מטופלת</button>
+    </div>
+  </div>
+
+</div>
+
+<script>
+(function () {
+  var current = null;      // המטופלת הפתוחה
+  var activeTab = "intake";
+  var saveTimer = null;
+  var saveState = document.getElementById("saveState");
+
+  // ---------- שרת ----------
+  function api(url, method, body) {
+    return fetch(url, {
+      method: method || "GET",
+      headers: body ? { "Content-Type": "application/json" } : undefined,
+      body: body ? JSON.stringify(body) : undefined
+    }).then(function (r) {
+      if (!r.ok) throw new Error("HTTP " + r.status);
+      return r.json();
+    });
+  }
+
+  function scheduleSave() {
+    if (!current) return;
+    saveState.textContent = "שומר…";
+    clearTimeout(saveTimer);
+    saveTimer = setTimeout(function () {
+      api("/api/patients/" + current.id, "PUT", current).then(function () {
+        saveState.textContent = "נשמר ✓";
+      }).catch(function () {
+        saveState.textContent = "שגיאת שמירה!";
+      });
+    }, 700);
+  }
+
+  // ---------- ניווט ----------
+  function show(viewId) {
+    document.querySelectorAll(".view").forEach(function (v) { v.classList.remove("active"); });
+    document.getElementById(viewId).classList.add("active");
+  }
+
+  function openList() {
+    current = null;
+    saveState.textContent = "";
+    show("listView");
+    loadList();
+  }
+
+  function openPatient(id, tab) {
+    api("/api/patients/" + id).then(function (p) {
+      current = p;
+      activeTab = tab || "intake";
+      document.getElementById("pName").value = p.name || "";
+      document.getElementById("pPhone").value = p.phone || "";
+      show("patientView");
+      renderTab();
+    });
+  }
+
+  // ---------- רשימה ----------
+  function loadList() {
+    api("/api/patients").then(function (patients) {
+      var q = document.getElementById("search").value.trim();
+      var box = document.getElementById("patientList");
+      box.innerHTML = "";
+      var filtered = patients.filter(function (p) {
+        return !q || (p.name || "").includes(q) || (p.phone || "").includes(q);
+      });
+      if (!filtered.length) {
+        box.innerHTML = '<div class="empty">אין עדיין מטופלות ברשימה.<br>שאלון מקדים שנשלח מהאתר ייכנס לכאן אוטומטית, או שאפשר להוסיף ידנית.</div>';
+        return;
+      }
+      filtered.sort(function (a, b) { return (b.createdAt || "").localeCompare(a.createdAt || ""); });
+      filtered.forEach(function (p) {
+        var row = document.createElement("div");
+        row.className = "patient-row";
+        var right = document.createElement("div");
+        right.innerHTML = '<div class="p-name"></div><div class="p-sub"></div>';
+        right.querySelector(".p-name").textContent = p.name;
+        right.querySelector(".p-sub").textContent =
+          (p.phone ? p.phone + " · " : "") +
+          (p.sessionCount ? p.sessionCount + " טיפולים" : "טרם החלו טיפולים") +
+          (p.lastSessionDate ? " · אחרון: " + p.lastSessionDate : "");
+        var badges = document.createElement("div");
+        badges.className = "badges";
+        badges.innerHTML =
+          '<span class="badge ' + (p.hasIntake ? "" : "off") + '">שאלון</span>' +
+          '<span class="badge ' + (p.hasFirstVisit ? "" : "off") + '">טיפול ראשון</span>';
+        row.appendChild(right);
+        row.appendChild(badges);
+        row.addEventListener("click", function () { openPatient(p.id); });
+        box.appendChild(row);
+      });
+    });
+  }
+
+  document.getElementById("search").addEventListener("input", loadList);
+  document.getElementById("newPatientBtn").addEventListener("click", function () {
+    document.getElementById("newPatientForm").classList.add("show");
+    document.getElementById("npName").focus();
+  });
+  document.getElementById("npCancel").addEventListener("click", function () {
+    document.getElementById("newPatientForm").classList.remove("show");
+  });
+  document.getElementById("npCreate").addEventListener("click", function () {
+    var name = document.getElementById("npName").value.trim();
+    if (!name) { document.getElementById("npName").focus(); return; }
+    api("/api/patients", "POST", {
+      name: name,
+      phone: document.getElementById("npPhone").value.trim()
+    }).then(function (p) {
+      document.getElementById("npName").value = "";
+      document.getElementById("npPhone").value = "";
+      document.getElementById("newPatientForm").classList.remove("show");
+      openPatient(p.id, "first");
+    });
+  });
+
+  // ---------- כרטיס מטופלת ----------
+  document.getElementById("backBtn").addEventListener("click", openList);
+  document.getElementById("pName").addEventListener("input", function () {
+    if (current) { current.name = this.value; scheduleSave(); }
+  });
+  document.getElementById("pPhone").addEventListener("input", function () {
+    if (current) { current.phone = this.value; scheduleSave(); }
+  });
+  document.getElementById("deletePatientBtn").addEventListener("click", function () {
+    if (!current) return;
+    if (!confirm("למחוק את הכרטיס של " + current.name + "? פעולה זו אינה הפיכה.")) return;
+    api("/api/patients/" + current.id, "DELETE").then(openList);
+  });
+  document.querySelectorAll(".tab").forEach(function (t) {
+    t.addEventListener("click", function () {
+      activeTab = t.dataset.tab;
+      renderTab();
+    });
+  });
+
+  function renderTab() {
+    document.querySelectorAll(".tab").forEach(function (t) {
+      t.classList.toggle("active", t.dataset.tab === activeTab);
+    });
+    var box = document.getElementById("tabContent");
+    box.innerHTML = "";
+    if (activeTab === "intake") renderIntake(box);
+    if (activeTab === "first") renderFirstVisit(box);
+    if (activeTab === "sessions") renderSessions(box);
+    if (activeTab === "notes") renderNotes(box);
+  }
+
+  // --- לשונית: שאלון מקדים (תצוגה בלבד) ---
+  function renderIntake(box) {
+    var card = document.createElement("div");
+    card.className = "card";
+    if (!current.intake) {
+      card.innerHTML = '<div class="empty">טרם התקבל שאלון מקדים עבור מטופלת זו.<br>אפשר לשלוח לה את הקישור לשאלון — הוא ישויך אוטומטית לפי שם או טלפון.</div>';
+      box.appendChild(card);
+      return;
+    }
+    var flags = current.intake["שאלון בטיחות - סומנו בכן"];
+    if (Array.isArray(flags) && flags.length) {
+      var fb = document.createElement("div");
+      fb.className = "flagbox";
+      fb.innerHTML = '<div class="k">⚠ שאלון בטיחות - סומנו "כן":</div>';
+      var ul = document.createElement("div");
+      flags.forEach(function (f) {
+        var d = document.createElement("div");
+        d.textContent = "• " + f;
+        ul.appendChild(d);
+      });
+      fb.appendChild(ul);
+      box.appendChild(fb);
+    }
+    Object.keys(current.intake).forEach(function (key) {
+      if (key === "submittedAt" || key === "שאלון בטיחות - סומנו בכן") return;
+      var v = current.intake[key];
+      if (Array.isArray(v)) v = v.join(", ");
+      if (!v) return;
+      var kv = document.createElement("div");
+      kv.className = "kv";
+      kv.innerHTML = '<div class="k"></div><div class="v"></div>';
+      kv.querySelector(".k").textContent = key;
+      kv.querySelector(".v").textContent = v;
+      card.appendChild(kv);
+    });
+    if (current.intake.submittedAt) {
+      var when = document.createElement("div");
+      when.className = "hint";
+      when.textContent = "נשלח: " + current.intake.submittedAt.slice(0, 10);
+      card.appendChild(when);
+    }
+    box.appendChild(card);
+  }
+
+  // --- לשונית: טיפול ראשון ---
+  var FIRST_VISIT = [
+    { title: "תשאול התלונה", fields: [
+      ["complaint", "תלונה עיקרית וסיבת הפנייה", "textarea"],
+      ["since", "ממתי התחיל (הכאב, למשל)"],
+      ["duration", "משך (כמה זמן נמשך עד שנרגע)"],
+      ["frequency", "תדירות (כל כמה זמן חוזר)"],
+      ["character", "אופי (חד/עמום, מפושט/ממוקד, פנימי/חיצוני, לוחץ/דוקר)"],
+      ["relief", "מה מיטיב (חימום/קירור/תנועה/מנוחה)"],
+      ["worse", "מה מחמיר"],
+      ["conventional", "התייחסות קונבנציונלית (אם יש)", "textarea"]
+    ]},
+    { title: "סקירת מערכות", fields: [
+      ["digestion", "עיכול", "textarea"],
+      ["musculo", "שרירים ושלד", "textarea"],
+      ["head", "ראש", "textarea"],
+      ["respiration", "נשימה ולב", "textarea"],
+      ["urogenital", "הפרשה ומין", "textarea"],
+      ["gynecology", "גינקולוגיה (מחזור, וסת, הריונות)", "textarea"],
+      ["sleep", "שינה", "textarea"],
+      ["mood", "אופי ומצב רוח", "textarea"],
+      ["habits", "הרגלים, תזונה והתמכרויות", "textarea"]
+    ]},
+    { title: "בדיקות", fields: [
+      ["tongueColor", "לשון - צבע (אדום, חיוור, סגול, סאב-לינגוויל, נקודות)"],
+      ["tongueBody", "לשון - מבנה (אחיד, סימני שיניים, נפיחות, חריצים, פפילות)"],
+      ["tongueCoat", "לשון - חיפוי (עבה/דק, חסר, מקולף, יבש/לח, צבע, ישן/חדש)"],
+      ["pulse", "דופק (אינטואיטיבי - חזק, חלש, מהיר, איטי, מרגיש כמו…)"],
+      ["abdomen", "אבחנת בטן / גב", "textarea"],
+      ["joints", "מפרקים וטווח תנועה"],
+      ["listening", "האזנה"],
+      ["observation", "הסתכלות"]
+    ]},
+    { title: "אבחנה סינית", fields: [
+      ["p_inout", "פנימי / חיצוני"],
+      ["p_defexc", "חוסר / עודף"],
+      ["p_hotcold", "חום / קור"],
+      ["p_yinyang", "YIN / YANG"],
+      ["s_qi", "צ'י"],
+      ["s_blood", "דם"],
+      ["s_fluids", "נוזלי גוף"],
+      ["s_jing", "Jing"],
+      ["s_shen", "Shen"],
+      ["organs", "איברים מעורבים"],
+      ["meridians", "מרידיאנים (סימפטומים על קו המרידיאן)"],
+      ["syndromes", "סינדרומים (סימנים וסימפטומים ← סינדרום)", "textarea"],
+      ["etiology", "אתיולוגיה (סביבה, תזונה, גנטיקה, תרופות, רגשי)", "textarea"],
+      ["principle", "עיקרון טיפולי", "textarea"]
+    ]},
+    { title: "תוכנית טיפול", fields: [
+      ["areas", "אזורי טיפול בגוף ואסטרטגיה (מנחים, רוטציות, למעלה/למטה)", "textarea"],
+      ["points", "נקודות צובו עיקריות (נקודה - מיקום - למה נבחרה)", "textarea"],
+      ["referral", "האם מומלץ איש מקצוע נוסף (רופאה, פסיכולוגית, תזונאית)"],
+      ["nutrition", "טיפול תזונתי"],
+      ["selfcare", "הצעות לטיפול עצמי (תעמלות, אורח חיים, דמיון מודרך, לחיצות)", "textarea"]
+    ]}
+  ];
+
+  function renderFirstVisit(box) {
+    if (!current.firstVisit) current.firstVisit = {};
+    var fv = current.firstVisit;
+
+    FIRST_VISIT.forEach(function (sec) {
+      var card = document.createElement("div");
+      card.className = "card";
+      var h = document.createElement("h3");
+      h.className = "sec";
+      h.textContent = sec.title;
+      card.appendChild(h);
+      var grid = document.createElement("div");
+      grid.className = sec.title === "סקירת מערכות" ? "" : "";
+      sec.fields.forEach(function (f) {
+        var key = f[0], label = f[1], type = f[2];
+        var lbl = document.createElement("label");
+        lbl.className = "f";
+        lbl.textContent = label;
+        var input = document.createElement(type === "textarea" ? "textarea" : "input");
+        if (type !== "textarea") input.type = "text";
+        input.value = fv[key] || "";
+        input.addEventListener("input", function () {
+          fv[key] = input.value;
+          scheduleSave();
+        });
+        card.appendChild(lbl);
+        card.appendChild(input);
+      });
+      box.appendChild(card);
+    });
+
+    // סטטוס אישור לטיפול
+    var card = document.createElement("div");
+    card.className = "card";
+    card.innerHTML = '<h3 class="sec">סטטוס לאחר מיון</h3>';
+    var sel = document.createElement("select");
+    ["", "מאושר לטיפול", "מאושר במגבלות", "לא מאושר לטיפול - הפניה לרופא"].forEach(function (o) {
+      var opt = document.createElement("option");
+      opt.value = o;
+      opt.textContent = o || "בחרי סטטוס…";
+      sel.appendChild(opt);
+    });
+    sel.value = fv.approval || "";
+    sel.addEventListener("change", function () { fv.approval = sel.value; scheduleSave(); });
+    card.appendChild(sel);
+    var lbl = document.createElement("label");
+    lbl.className = "f";
+    lbl.textContent = "הערות לסטטוס / מגבלות";
+    var notes = document.createElement("textarea");
+    notes.value = fv.approvalNotes || "";
+    notes.addEventListener("input", function () { fv.approvalNotes = notes.value; scheduleSave(); });
+    card.appendChild(lbl);
+    card.appendChild(notes);
+    box.appendChild(card);
+  }
+
+  // --- לשונית: מעקב טיפולים ---
+  var SESSION_FIELDS = [
+    ["patientReport", "דיווח המטופלת (מה השתנה / מה לא השתנה / תלונה חדשה)", "textarea"],
+    ["therapistReport", "דיווח המטפלת (שינוי בלשון, דופק, נראות, טווח תנועה)", "textarea"],
+    ["treatment", "פירוט הטיפול (מנחים, רוטציות, מרידיאנים, נקודות)", "textarea"],
+    ["nextPlan", "המלצות לטיפול הבא (מרידיאן, נקודות לחיצה, אבחון)", "textarea"],
+    ["patientRecs", "המלצות עבור המטופלת (תזונה, פעילות, טיפול עצמי, מעקב רופא)", "textarea"],
+    ["notes", "הערות חופשיות (קבלה, תשלום, תיאום, כל דבר אחר)", "textarea"]
+  ];
+
+  function renderSessions(box) {
+    var addBtn = document.createElement("button");
+    addBtn.className = "primary";
+    addBtn.textContent = "+ הוספת טיפול";
+    addBtn.style.marginBottom = "14px";
+    addBtn.addEventListener("click", function () {
+      current.sessions.push({
+        date: new Date().toISOString().slice(0, 10),
+        patientReport: "", therapistReport: "", treatment: "",
+        nextPlan: "", patientRecs: "", receipt: false, notes: ""
+      });
+      scheduleSave();
+      renderTab();
+    });
+    box.appendChild(addBtn);
+
+    if (!current.sessions.length) {
+      var e = document.createElement("div");
+      e.className = "empty";
+      e.textContent = "טרם נרשמו טיפולים.";
+      box.appendChild(e);
+      return;
+    }
+
+    current.sessions.forEach(function (s, i) {
+      var card = document.createElement("div");
+      card.className = "card";
+
+      var head = document.createElement("div");
+      head.className = "session-head";
+      var num = document.createElement("span");
+      num.className = "num";
+      num.textContent = "טיפול מספר " + (i + 1);
+      var date = document.createElement("input");
+      date.type = "date";
+      date.style.maxWidth = "170px";
+      date.value = s.date || "";
+      date.addEventListener("input", function () { s.date = date.value; scheduleSave(); });
+      var receipt = document.createElement("label");
+      receipt.className = "receipt";
+      var rc = document.createElement("input");
+      rc.type = "checkbox";
+      rc.checked = !!s.receipt;
+      rc.addEventListener("change", function () { s.receipt = rc.checked; scheduleSave(); });
+      receipt.appendChild(rc);
+      receipt.appendChild(document.createTextNode("ניתנה קבלה"));
+      head.appendChild(num);
+      head.appendChild(date);
+      head.appendChild(receipt);
+      card.appendChild(head);
+
+      SESSION_FIELDS.forEach(function (f) {
+        var key = f[0], label = f[1];
+        var lbl = document.createElement("label");
+        lbl.className = "f";
+        lbl.textContent = label;
+        var input = document.createElement("textarea");
+        input.value = s[key] || "";
+        input.addEventListener("input", function () { s[key] = input.value; scheduleSave(); });
+        card.appendChild(lbl);
+        card.appendChild(input);
+      });
+
+      var del = document.createElement("button");
+      del.className = "danger";
+      del.textContent = "מחיקת טיפול זה";
+      del.style.marginTop = "10px";
+      del.addEventListener("click", function () {
+        if (!confirm("למחוק את טיפול מספר " + (i + 1) + "?")) return;
+        current.sessions.splice(i, 1);
+        scheduleSave();
+        renderTab();
+      });
+      card.appendChild(del);
+      box.appendChild(card);
+    });
+  }
+
+  // --- לשונית: הערות וסיכום ---
+  function renderNotes(box) {
+    if (!current.seriesSummary) current.seriesSummary = {};
+    var ss = current.seriesSummary;
+
+    var card = document.createElement("div");
+    card.className = "card";
+    card.innerHTML = '<h3 class="sec">הערות כלליות</h3><p class="hint">קבלות, חובות תשלום, העדפות אישיות, תזכורות - כל מה שחשוב לזכור.</p>';
+    var notes = document.createElement("textarea");
+    notes.style.minHeight = "120px";
+    notes.value = current.notes || "";
+    notes.addEventListener("input", function () { current.notes = notes.value; scheduleSave(); });
+    card.appendChild(notes);
+    box.appendChild(card);
+
+    var card2 = document.createElement("div");
+    card2.className = "card";
+    card2.innerHTML = '<h3 class="sec">סיכום סדרת הטיפולים</h3>';
+    [
+      ["start", "בקצרה - מה היה המצב בהתחלה (תלונה עיקרית, אבחנה סינית, סימפטומים עיקריים)"],
+      ["done", "בקצרה - מה ביצענו באופן כללי לאורך כל הסדרה"],
+      ["results", "תוצאות הסדרה"]
+    ].forEach(function (f) {
+      var lbl = document.createElement("label");
+      lbl.className = "f";
+      lbl.textContent = f[1];
+      var input = document.createElement("textarea");
+      input.value = ss[f[0]] || "";
+      input.addEventListener("input", function () { ss[f[0]] = input.value; scheduleSave(); });
+      card2.appendChild(lbl);
+      card2.appendChild(input);
+    });
+    box.appendChild(card2);
+  }
+
+  openList();
+})();
+</script>
+</body>
+</html>
