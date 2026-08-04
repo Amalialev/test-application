@@ -221,6 +221,52 @@
     margin-top: 6px;
   }
 
+  .safety-list { display: flex; flex-direction: column; }
+  .safety-item {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 14px;
+    padding: 11px 0;
+    border-bottom: 1px solid var(--line);
+  }
+  .safety-item:last-child { border-bottom: 0; }
+  .safety-item p { margin: 0; font-size: 15.5px; flex: 1; }
+  .yn { display: flex; gap: 6px; flex-shrink: 0; }
+  .yn label { position: relative; }
+  .yn input { position: absolute; opacity: 0; pointer-events: none; }
+  .yn span {
+    display: block;
+    min-width: 46px;
+    text-align: center;
+    padding: 7px 10px;
+    border: 1px solid var(--line);
+    border-radius: 999px;
+    background: var(--bg);
+    font-size: 14px;
+    font-weight: 600;
+    cursor: pointer;
+  }
+  .yn input:checked + span {
+    background: var(--accent);
+    color: var(--accent-ink);
+    border-color: var(--accent);
+  }
+  .yn input:focus-visible + span {
+    outline: 2px solid var(--accent);
+    outline-offset: 1px;
+  }
+  .safety-note {
+    display: none;
+    margin-top: 14px;
+    padding: 12px 14px;
+    border-radius: 10px;
+    background: var(--accent-soft);
+    border: 1px solid var(--accent);
+    font-size: 15px;
+  }
+  .safety-note.show { display: block; }
+
   .declaration {
     background: var(--accent-soft);
     border: 1px solid var(--accent);
@@ -383,6 +429,11 @@
       </fieldset>
 
       <div class="field">
+        <label class="q" for="allergies">רגישויות ואלרגיות</label>
+        <p class="hint">תרופות, מזון, מגע ועוד</p>
+        <input type="text" id="allergies" name="allergies">
+      </div>
+      <div class="field">
         <label class="q" for="medications">האם את/ה נוטל/ת תרופות קבועות או תוספי תזונה?</label>
         <p class="hint">נא לפרט שמות ומינונים</p>
         <textarea id="medications" name="medications"></textarea>
@@ -454,6 +505,41 @@
     <!-- חלק 5 -->
     <section class="card">
       <div class="section-label"><span class="section-num">חלק 5</span></div>
+      <h2>שאלון בטיחות</h2>
+      <p class="hint">נא לענות על כל השאלות. תשובה "כן" אינה מונעת טיפול — היא רק מאפשרת לנו לוודא יחד, ובמידת הצורך עם רופא, שהטיפול בטוח עבורך.</p>
+
+      <div class="safety-list" id="safetyList">
+        <div class="safety-item"><p>כאב כרוני מוכר שמגיע עם סוג חדש או שונה של כאב</p></div>
+        <div class="safety-item"><p>בצקת באיבר שלא עברה בירור ברור, במיוחד אצל אדם בריא בדרך כלל</p></div>
+        <div class="safety-item"><p>בצקת כללית (עלייה במשקל מעל חצי קילו ביום)</p></div>
+        <div class="safety-item"><p>כל כאב חדש בחזה שאינו מוכר</p></div>
+        <div class="safety-item"><p>כאב בחזה שלא נמצאה לו סיבה ברורה</p></div>
+        <div class="safety-item"><p>פלפיטציות (דפיקות לב) חדשות, דופק לא סדיר שאינו מוכר או שלא נבדק</p></div>
+        <div class="safety-item"><p>קוצר נשימה חריף או חדש</p></div>
+        <div class="safety-item"><p>בלוטה / בלוטות לימפה מוגדלות שלא על רקע מחלה חריפה</p></div>
+        <div class="safety-item"><p>כאב בטן חריף שאינו בעל אופי קוליקי (התקפי)</p></div>
+        <div class="safety-item"><p>בחילות והקאות על רקע חבלה בראש או בעיה לבבית</p></div>
+        <div class="safety-item"><p>עצירות חריפה עם חשש לחסימת מעיים</p></div>
+        <div class="safety-item"><p>פטכיות ופורפורות (שטפי דם בעור)</p></div>
+        <div class="safety-item"><p>מיעוט או חוסר שתן</p></div>
+        <div class="safety-item"><p>שינוי במצב ההכרה, שינוי בהתנהגות, בלבול או הפרעות בהתמצאות</p></div>
+        <div class="safety-item"><p>כאב פרקים חריף שכולל אחת מהאפשרויות: טראומה, זיהום בעור, חום מקומי, נפיחות מקומית, אודם, הגבלה בתנועה</p></div>
+        <div class="safety-item"><p>כאב גב או צוואר שלא עבר בירור אצל רופא, עם אחד מאלה: הקרנות לגפיים, אופי כאב משתנה, כאב שמוחמר בלילה, גיל מעבר, גיל צעיר, טראומה (צליפת שוט), אוסטאופורוזיס</p></div>
+        <div class="safety-item"><p>אירוע סרטני בחמש השנים האחרונות</p></div>
+        <div class="safety-item"><p>לחץ דם שאינו יציב</p></div>
+        <div class="safety-item"><p>נקזים או צינורות שהושארו בגוף</p></div>
+        <div class="safety-item"><p>מועמדות לניתוח</p></div>
+        <div class="safety-item"><p>מחלה, אשפוז קודם או נטילת תרופות שלא צוינו בשאלון זה</p></div>
+      </div>
+
+      <div class="safety-note" id="safetyNote">
+        סימנת "כן" באחת השאלות או יותר — זה בסדר גמור. נתייחס לכך יחד לפני קביעת הטיפול, וייתכן שנבקש אישור רופא לפני שנתחיל, לביטחונך.
+      </div>
+    </section>
+
+    <!-- חלק 6 -->
+    <section class="card">
+      <div class="section-label"><span class="section-num">חלק 6</span></div>
       <h2>הצהרה ואישור</h2>
 
       <div class="declaration">
@@ -517,6 +603,38 @@
   bindToggle("condOther", "condOtherField", false);
   bindToggle("pregYes", "pregWeekField", true, "pregnancy");
 
+  // שאלון בטיחות - יצירת כפתורי כן/לא לכל שאלה
+  var safetyItems = document.querySelectorAll("#safetyList .safety-item");
+  safetyItems.forEach(function (item, i) {
+    var yn = document.createElement("div");
+    yn.className = "yn";
+    ["כן", "לא"].forEach(function (v) {
+      var lbl = document.createElement("label");
+      var inp = document.createElement("input");
+      inp.type = "radio";
+      inp.name = "safety-" + i;
+      inp.value = v;
+      inp.required = true;
+      var span = document.createElement("span");
+      span.textContent = v;
+      lbl.appendChild(inp);
+      lbl.appendChild(span);
+      yn.appendChild(lbl);
+    });
+    item.appendChild(yn);
+  });
+  function safetyFlags() {
+    var flags = [];
+    safetyItems.forEach(function (item, i) {
+      var yes = form.querySelector('input[name="safety-' + i + '"]:checked');
+      if (yes && yes.value === "כן") flags.push(item.querySelector("p").textContent);
+    });
+    return flags;
+  }
+  document.getElementById("safetyList").addEventListener("change", function () {
+    document.getElementById("safetyNote").classList.toggle("show", safetyFlags().length > 0);
+  });
+
   // סרגל התקדמות - לפי שדות חובה שמולאו
   var requiredIds = ["fullName", "birthOrAge", "phone", "mainComplaint", "declaration"];
   function updateProgress() {
@@ -553,6 +671,7 @@
       "טיפולים קודמים": val("priorTreatment"),
       "מחלות / אבחנות": checked("conditions"),
       "פירוט אחר": form.querySelector('input[name="conditionsOther"]').value.trim(),
+      "רגישויות ואלרגיות": val("allergies"),
       "תרופות ותוספים": val("medications"),
       "ניתוחים / אשפוזים / פציעות": val("surgeries"),
       "הריון / הנקה": radio("pregnancy"),
@@ -561,6 +680,7 @@
       "רמת מתח (1-5)": radio("stress"),
       "תזונה ועיכול": checked("digestion"),
       "פעילות גופנית": val("activity"),
+      "שאלון בטיחות - סומנו בכן": safetyFlags().length ? safetyFlags() : "אין (כל התשובות: לא)",
       "הצהרת בריאות": "אושרה"
     };
   }
