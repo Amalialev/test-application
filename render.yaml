@@ -2,15 +2,11 @@ services:
   - type: web
     name: shiatsu-clinic
     runtime: node
-    plan: starter
+    plan: free
     buildCommand: npm install
     startCommand: npm start
-    disk:
-      name: clinic-data
-      mountPath: /data
-      sizeGB: 1
     envVars:
-      - key: DATA_DIR
-        value: /data
       - key: ADMIN_PASSWORD
+        sync: false
+      - key: DATABASE_URL
         sync: false

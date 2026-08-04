@@ -80,9 +80,9 @@ app.get("/healthcheck", (req, res, next) => {
 });
 
 // שאלון מקדים - יוצר או מעדכן כרטיס מטופלת
-app.post("/api/intake", (req, res) => {
+app.post("/api/intake", async (req, res) => {
   try {
-    var db = store.load();
+    var db = await store.load();
     var intake = req.body || {};
     var name = (intake["שם מלא"] || "").trim();
     var phone = (intake["טלפון"] || "").trim();
@@ -110,7 +110,7 @@ app.post("/api/intake", (req, res) => {
       db.patients.push(patient);
     }
 
-    store.save(db);
+    await store.save(db);
     res.status(201).json({ ok: true, patientId: patient.id });
   } catch (err) {
     console.error("Failed to save intake submission", err);
@@ -118,8 +118,8 @@ app.post("/api/intake", (req, res) => {
   }
 });
 
-app.get("/api/patients", (req, res) => {
-  var db = store.load();
+app.get("/api/patients", async (req, res) => {
+  var db = await store.load();
   res.json(
     db.patients.map(function (p) {
       var last = p.sessions.length ? p.sessions[p.sessions.length - 1].date : null;
@@ -137,8 +137,8 @@ app.get("/api/patients", (req, res) => {
   );
 });
 
-app.post("/api/patients", (req, res) => {
-  var db = store.load();
+app.post("/api/patients", async (req, res) => {
+  var db = await store.load();
   var patient = {
     id: store.newId(),
     name: (req.body.name || "").trim() || "ללא שם",
@@ -151,7 +151,7 @@ app.post("/api/patients", (req, res) => {
     seriesSummary: null
   };
   db.patients.push(patient);
-  store.save(db);
+  await store.save(db);
   res.status(201).json(patient);
 });
 
@@ -159,15 +159,15 @@ function findPatient(db, id) {
   return db.patients.find(function (p) { return p.id === id; });
 }
 
-app.get("/api/patients/:id", (req, res) => {
-  var db = store.load();
+app.get("/api/patients/:id", async (req, res) => {
+  var db = await store.load();
   var patient = findPatient(db, req.params.id);
   if (!patient) return res.status(404).json({ ok: false });
   res.json(patient);
 });
 
-app.put("/api/patients/:id", (req, res) => {
-  var db = store.load();
+app.put("/api/patients/:id", async (req, res) => {
+  var db = await store.load();
   var patient = findPatient(db, req.params.id);
   if (!patient) return res.status(404).json({ ok: false });
 
@@ -176,16 +176,16 @@ app.put("/api/patients/:id", (req, res) => {
       if (key in req.body) patient[key] = req.body[key];
     });
 
-  store.save(db);
+  await store.save(db);
   res.json({ ok: true });
 });
 
-app.delete("/api/patients/:id", (req, res) => {
-  var db = store.load();
+app.delete("/api/patients/:id", async (req, res) => {
+  var db = await store.load();
   var before = db.patients.length;
   db.patients = db.patients.filter(function (p) { return p.id !== req.params.id; });
   if (db.patients.length === before) return res.status(404).json({ ok: false });
-  store.save(db);
+  await store.save(db);
   res.json({ ok: true });
 });
 

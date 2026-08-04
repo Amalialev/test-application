@@ -4,9 +4,10 @@
   "main": "src/app.js",
   "author": "Oleksandr Kozlenko",
   "scripts": {
-     "start": "node src/app.js"
+    "start": "node src/app.js"
   },
   "dependencies": {
-    "express": "^4.18.1"
+    "express": "^4.18.1",
+    "pg": "^8.22.0"
   }
 }
