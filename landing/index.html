@@ -305,7 +305,12 @@ footer .handle{
       <h2>לקבלת המדריך המלא</h2>
       <p class="sub">משאירים פרטים, והמדריך נפתח כאן מיד — אפשר לקרוא, להדפיס או לשמור כ־PDF.</p>
 
-      <form id="lead-form" novalidate>
+      <!-- name + data-netlify נדרשים כדי ש-Netlify יזהה את הטופס בזמן הדיפלוי.
+           כשלא מארחים ב-Netlify הם פשוט לא עושים כלום. -->
+      <form id="lead-form" name="celiac-guide-leads" novalidate
+            data-netlify="true" data-netlify-honeypot="company">
+        <input type="hidden" name="form-name" value="celiac-guide-leads">
+        <input type="hidden" name="source" id="source-field">
         <div class="field" id="f-name">
           <label for="name">שם מלא</label>
           <input type="text" id="name" name="name" autocomplete="name" placeholder="השם שלך">
@@ -569,37 +574,62 @@ footer .handle{
   </div>
 </div>
 
-<!-- יעד השליחה של הטופס — נשאר נסתר כדי שהגולש/ת לא ינווט/תנווט לדף של בראבו -->
-<iframe name="bravo_sink" id="bravo_sink" title="שליחה" style="display:none" aria-hidden="true"></iframe>
+<!-- יעד השליחה של הטופס — נשאר נסתר כדי שהגולש/ת לא ינווט/תנווט לדף התודה של Brevo -->
+<iframe name="lead_sink" id="lead_sink" title="שליחה" style="display:none" aria-hidden="true"></iframe>
 
 <script>
 /* ============================================================
-   ✦ הגדרות בראבו — זה החלק היחיד שצריך לערוך ✦
+   ✦ יעד הלידים — זה החלק היחיד שצריך לערוך ✦
    ------------------------------------------------------------
-   action  = כתובת ה-action של הטופס מבראבו (מתוך קוד ההטמעה)
-   fields  = שמות השדות (ה-name) שבראבו מצפה לקבל
-   extra   = שדות נסתרים נוספים שבראבו דורש, אם יש
-             (למשל מזהה רשימה, טוקן, כתובת דף תודה)
-   כל עוד action ריק — העמוד עובד במצב הדגמה: הטופס לא נשלח לשום
-   מקום, והמדריך פשוט נפתח.
+   mode — לאן נשלח הליד:
+
+   "demo"     הליד לא נשלח לשום מקום. המדריך פשוט נפתח.
+              לבדיקות עיצוב בלבד — לא להשאיר כך באוויר.
+
+   "netlify"  הלידים נאספים אצל Netlify, עם כפתור ייצוא ל-CSV
+              בדשבורד. עובד רק אם העמוד מאוחסן ב-Netlify.
+              לא צריך להגדיר שום דבר נוסף כאן.
+
+   "post"     הליד נשלח ישירות ליעד חיצוני — Brevo, טופס גוגל, וכו'.
+              ממלאים action + fields (+ extra אם צריך).
+
+   אפשר להתחיל ב-"netlify", לאסוף לידים, ולעבור ל-"post" מול Brevo
+   בהמשך — בלי לשנות שום דבר אחר בעמוד.
    ============================================================ */
-var BRAVO = {
+var LEAD = {
+  mode: "demo",
+
+  /* פורמט הטלפון שנשלח:
+     "intl"  → ‎+972521234567   (מה ש-Brevo מצפה לו בשדה SMS)
+     "local" → 0521234567 */
+  phoneFormat: "intl",
+
+  /* ↓ רלוונטי רק ל-mode: "post" ↓
+     action = ה-action של הטופס מתוך קוד ההטמעה של Brevo,
+              בדרך כלל בצורה https://sibforms.com/serve/XXXXXXXX
+     fields = שמות השדות (ה-name) שהיעד מצפה לקבל.
+              ב-Brevo הם באותיות גדולות: EMAIL, FIRSTNAME, SMS
+     extra  = שדות נסתרים נוספים מקוד ההטמעה */
   action: "",
   fields: {
-    name:    "name",
-    phone:   "phone",
-    email:   "email",
-    consent: "consent"
+    name:    "FIRSTNAME",
+    phone:   "SMS",
+    email:   "EMAIL",
+    consent: "OPT_IN",
+    source:  "SOURCE"
   },
   extra: {
-    // "list_id": "12345",
-    // "token": "xxxxxxxx"
-  }
-};
+    /* Brevo שולח גם את אלה בקוד ההטמעה שלו.
+       email_address_check חייב להישאר ריק — זו מלכודת הספאם שלהם. */
+    // "email_address_check": "",
+    // "locale": "he",
+    // "html_type": "simple"
+  },
 
-/* מקור הליד — מגיע מהלינק במאניצ'ט, לדוגמה:
-   .../index.html?src=manychat  →  יישלח לבראבו בשדה source אם הוא קיים אצלך */
-var SOURCE_FIELD = "source";
+  /* ↓ רלוונטי רק ל-mode: "netlify" ↓
+     חייב להיות זהה ל-name של הטופס ב-HTML למעלה */
+  netlifyFormName: "celiac-guide-leads"
+};
 
 (function () {
   "use strict";
@@ -610,6 +640,14 @@ var SOURCE_FIELD = "source";
   var btn      = document.getElementById("submit-btn");
   var formErr  = document.getElementById("form-error");
   var STORAGE  = "celiac-guide-unlocked";
+
+  /* ---------- מקור הליד מהלינק: ‎?src=manychat ---------- */
+  (function () {
+    var f = document.getElementById("source-field");
+    try {
+      if (f) f.value = new URLSearchParams(location.search).get("src") || "";
+    } catch (e) {}
+  })();
 
   /* ---------- מי שכבר מילא — לא ממלא שוב ---------- */
   try {
@@ -654,26 +692,42 @@ var SOURCE_FIELD = "source";
     return ok;
   }
 
-  /* ---------- שליחה לבראבו דרך iframe נסתר ---------- */
-  function sendToBravo(vals) {
+  /* ---------- נרמול טלפון ----------
+     Brevo מצפה למספר בפורמט בינלאומי בשדה SMS: 0521234567 → ‎+972521234567 */
+  function normalizePhone(v) {
+    var d = String(v).replace(/[^\d]/g, "").replace(/^972/, "0");
+    if (LEAD.phoneFormat === "local") return d;
+    return "+972" + d.replace(/^0/, "");
+  }
+
+  function leadSource() {
+    try {
+      return new URLSearchParams(location.search).get("src") || "";
+    } catch (e) { return ""; }
+  }
+
+  /* ---------- מצב "post": שליחה ליעד חיצוני דרך iframe נסתר ----------
+     ה-iframe מונע ניווט לדף התודה של היעד, ופותר את עניין ה-CORS */
+  function sendPost(vals) {
     var f = document.createElement("form");
     f.method = "post";
-    f.action = BRAVO.action;
-    f.target = "bravo_sink";
+    f.action = LEAD.action;
+    f.target = "lead_sink";
     f.style.display = "none";
     f.acceptCharset = "UTF-8";
 
     var payload = {};
-    payload[BRAVO.fields.name]  = vals.name;
-    payload[BRAVO.fields.phone] = vals.phone;
-    payload[BRAVO.fields.email] = vals.email;
-    if (BRAVO.fields.consent) payload[BRAVO.fields.consent] = "1";
+    var fields = LEAD.fields || {};
+    if (fields.name)    payload[fields.name]    = vals.name;
+    if (fields.phone)   payload[fields.phone]   = normalizePhone(vals.phone);
+    if (fields.email)   payload[fields.email]   = vals.email;
+    if (fields.consent) payload[fields.consent] = "1";
 
-    var src = new URLSearchParams(location.search).get("src");
-    if (src && SOURCE_FIELD) payload[SOURCE_FIELD] = src;
+    var src = leadSource();
+    if (src && fields.source) payload[fields.source] = src;
 
-    Object.keys(BRAVO.extra || {}).forEach(function (k) {
-      payload[k] = BRAVO.extra[k];
+    Object.keys(LEAD.extra || {}).forEach(function (k) {
+      payload[k] = LEAD.extra[k];
     });
 
     Object.keys(payload).forEach(function (k) {
@@ -687,6 +741,39 @@ var SOURCE_FIELD = "source";
     document.body.appendChild(f);
     f.submit();
     setTimeout(function () { f.remove(); }, 4000);
+  }
+
+  /* ---------- מצב "netlify": הלידים נאספים בדשבורד של Netlify ----------
+     משם אפשר לייצא CSV ולייבא אותו ל-Brevo בהמשך */
+  function sendNetlify(vals) {
+    var body = new URLSearchParams();
+    body.append("form-name", LEAD.netlifyFormName);
+    body.append("name", vals.name);
+    body.append("phone", normalizePhone(vals.phone));
+    body.append("email", vals.email);
+    body.append("consent", "1");
+    body.append("source", leadSource());
+
+    fetch("/", {
+      method: "POST",
+      headers: { "Content-Type": "application/x-www-form-urlencoded;charset=UTF-8" },
+      body: body.toString()
+    })["catch"](function (e) {
+      console.error("[מדריך צליאק] שליחת הליד ל-Netlify נכשלה:", e);
+    });
+  }
+
+  function sendLead(vals) {
+    if (LEAD.mode === "netlify") { sendNetlify(vals); return; }
+    if (LEAD.mode === "post") {
+      if (!LEAD.action) {
+        console.error('[מדריך צליאק] mode="post" אבל LEAD.action ריק — הליד לא נשלח.');
+        return;
+      }
+      sendPost(vals);
+      return;
+    }
+    console.warn('[מדריך צליאק] mode="demo" — הליד לא נשלח לשום מקום.');
   }
 
   /* ---------- פתיחת המדריך ---------- */
@@ -716,11 +803,7 @@ var SOURCE_FIELD = "source";
     btn.textContent = "שולח…";
 
     try {
-      if (BRAVO.action) {
-        sendToBravo(vals);
-      } else {
-        console.warn("[מדריך צליאק] BRAVO.action ריק — הליד לא נשלח לשום מקום (מצב הדגמה).");
-      }
+      sendLead(vals);
       try { localStorage.setItem(STORAGE, "1"); } catch (e) {}
       setTimeout(function () { unlock(true); }, 350);
     } catch (e) {
