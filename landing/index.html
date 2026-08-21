@@ -1,0 +1,738 @@
+<!doctype html>
+<html lang="he" dir="rtl">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>צליאק בכיתה: מה חשוב לדעת — המדריך לצוות החינוכי</title>
+<meta name="description" content="מדריך קצר וברור להעברה למחנכת ולצוות בית הספר: מה זה צליאק, למה ההקפדה חשובה, ומה באמת נדרש בשגרת הכיתה.">
+<meta property="og:title" content="צליאק בכיתה: מה חשוב לדעת">
+<meta property="og:description" content="המדריך לצוות החינוכי — כולל כרטיס לתלייה בכיתה.">
+<meta property="og:type" content="website">
+<meta name="robots" content="noindex">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Assistant:wght@400;600;700&family=Frank+Ruhl+Libre:wght@700;900&display=swap" rel="stylesheet">
+
+<style>
+/* ============================================================
+   עיצוב — תואם לשפה הוויזואלית של המדריך המקורי
+   ============================================================ */
+:root{
+  --bg:#ffffff;
+  --cream:#f2eee2;
+  --cream-soft:#f7f4ec;
+  --ink:#2e2e2c;
+  --ink-soft:#55554f;
+  --muted:#8f8f86;
+  --terra:#c1603f;
+  --olive:#7c8c6c;
+  --olive-deep:#5f7355;
+  --green-bg:#e9ede2;
+  --gold:#c0932f;
+  --line:#e2ddcf;
+  --radius:14px;
+  --maxw:720px;
+}
+*{box-sizing:border-box}
+html{-webkit-text-size-adjust:100%}
+body{
+  margin:0;
+  background:var(--bg);
+  color:var(--ink);
+  font-family:"Assistant","Segoe UI",Arial,sans-serif;
+  font-size:17px;
+  line-height:1.75;
+}
+h1,h2,h3{font-family:"Frank Ruhl Libre","Assistant",Georgia,serif;font-weight:900;line-height:1.25;margin:0}
+p{margin:0 0 1em}
+p:last-child{margin-bottom:0}
+strong{font-weight:700}
+.wrap{max-width:var(--maxw);margin:0 auto;padding:0 20px}
+.eyebrow{
+  font-size:13px;font-weight:700;letter-spacing:.16em;
+  color:var(--terra);text-transform:none;margin:0 0 14px
+}
+
+/* ---------- HERO ---------- */
+.hero{padding:44px 0 8px}
+.hero h1{font-size:clamp(30px,7.5vw,44px);margin-bottom:18px}
+.hero .lede{font-size:clamp(17px,4.3vw,19px);color:var(--ink-soft);margin-bottom:26px}
+.rule{height:2px;background:var(--olive);opacity:.75;margin:26px 0}
+
+.inside{
+  background:var(--cream-soft);
+  border:1px solid var(--line);
+  border-radius:var(--radius);
+  padding:22px 22px 18px;
+  margin:0 0 30px;
+}
+.inside h2{font-size:19px;margin-bottom:14px}
+.inside ul{margin:0;padding:0;list-style:none}
+.inside li{position:relative;padding-inline-start:24px;margin-bottom:10px;color:var(--ink-soft)}
+.inside li:last-child{margin-bottom:0}
+.inside li::before{
+  content:"";position:absolute;inset-inline-start:4px;top:.72em;
+  width:8px;height:8px;border-radius:50%;background:var(--gold)
+}
+
+/* ---------- FORM ---------- */
+.form-card{
+  background:var(--cream);
+  border-radius:var(--radius);
+  border:1px solid var(--line);
+  border-inline-start:6px solid var(--gold);
+  padding:26px 22px;
+  margin-bottom:36px;
+}
+.form-card h2{font-size:clamp(22px,5.5vw,27px);margin-bottom:8px}
+.form-card .sub{color:var(--ink-soft);font-size:16px;margin-bottom:22px}
+.field{margin-bottom:16px}
+.field label{display:block;font-weight:700;font-size:15px;margin-bottom:6px}
+.field input[type=text],
+.field input[type=tel],
+.field input[type=email]{
+  width:100%;
+  font:inherit;
+  font-size:17px;
+  padding:13px 14px;
+  border:1.5px solid #d9d3c2;
+  border-radius:10px;
+  background:#fff;
+  color:var(--ink);
+  transition:border-color .15s,box-shadow .15s;
+}
+.field input:focus{
+  outline:none;border-color:var(--olive);
+  box-shadow:0 0 0 3px rgba(124,140,108,.22)
+}
+.field input[aria-invalid="true"]{border-color:var(--terra)}
+.err{display:none;color:var(--terra);font-size:14px;font-weight:600;margin-top:5px}
+.field.is-bad .err{display:block}
+
+.consent{display:flex;gap:10px;align-items:flex-start;margin:18px 0 6px}
+.consent input{margin:6px 0 0;width:19px;height:19px;flex:0 0 auto;accent-color:var(--olive-deep)}
+.consent label{font-size:14.5px;color:var(--ink-soft);line-height:1.6}
+/* הסתרה נגישה, בלי למקם מחוץ למסך — מיקום שלילי יוצר גלילה אופקית ב-RTL */
+.hp{
+  position:absolute;width:1px;height:1px;padding:0;margin:-1px;border:0;
+  overflow:hidden;clip:rect(0 0 0 0);clip-path:inset(50%);white-space:nowrap
+}
+html,body{overflow-x:hidden}
+
+button.cta{
+  width:100%;
+  font:inherit;font-weight:700;font-size:18px;
+  color:#fff;background:var(--terra);
+  border:0;border-radius:10px;
+  padding:15px 18px;margin-top:14px;
+  cursor:pointer;
+  transition:background .15s,transform .05s;
+}
+button.cta:hover{background:#a95233}
+button.cta:active{transform:translateY(1px)}
+button.cta[disabled]{opacity:.65;cursor:default}
+.fineprint{font-size:13.5px;color:var(--muted);margin-top:12px;text-align:center}
+.form-error{
+  display:none;margin-top:14px;padding:11px 14px;border-radius:10px;
+  background:#f6e3dc;color:#8e3f24;font-size:15px;font-weight:600
+}
+.form-error.show{display:block}
+
+/* ---------- GUIDE ---------- */
+#guide[hidden]{display:none}
+.thanks{
+  background:var(--green-bg);
+  border-inline-start:5px solid var(--olive-deep);
+  border-radius:var(--radius);
+  padding:20px 20px;margin:36px 0 10px
+}
+.thanks h2{font-size:22px;margin-bottom:8px}
+.thanks p{color:var(--ink-soft);margin:0}
+
+.doc{padding:8px 0 0}
+.doc-head{padding:34px 0 0}
+.doc-head h2{font-size:clamp(27px,6.5vw,36px);margin-bottom:14px}
+.doc-head .lede{color:var(--ink-soft)}
+
+.section{margin:30px 0}
+.section-title{display:flex;align-items:center;gap:12px;margin-bottom:14px}
+.num{
+  flex:0 0 auto;
+  width:30px;height:30px;border-radius:50%;
+  border:1.5px solid var(--terra);color:var(--terra);
+  font-family:"Assistant",sans-serif;font-weight:700;font-size:15px;
+  display:flex;align-items:center;justify-content:center
+}
+.section-title h3{font-size:clamp(20px,5vw,23px)}
+
+.section ul{margin:0;padding:0;list-style:none}
+.section li{position:relative;padding-inline-start:22px;margin-bottom:11px;color:var(--ink)}
+.section li::before{
+  content:"";position:absolute;inset-inline-start:2px;top:.72em;
+  width:7px;height:7px;border-radius:50%;background:var(--gold)
+}
+
+.note{
+  background:var(--cream-soft);
+  border-inline-start:5px solid var(--terra);
+  border-radius:10px;padding:18px 20px;margin:20px 0;color:var(--ink-soft)
+}
+.note.good{background:var(--green-bg);border-inline-start-color:var(--olive-deep)}
+
+/* פרטי התלמיד/ה */
+.pupil{
+  background:var(--cream);
+  border-inline-start:6px solid var(--gold);
+  border-radius:var(--radius);
+  padding:20px 22px;margin:26px 0;
+  display:grid;grid-template-columns:repeat(3,1fr);gap:18px
+}
+.pupil .cell label{display:block;font-size:13.5px;font-weight:700;color:var(--ink-soft);margin-bottom:8px}
+.pupil input{
+  width:100%;font:inherit;font-size:16px;
+  border:0;border-bottom:1.5px solid #c9c2ae;background:transparent;
+  padding:4px 2px;color:var(--ink)
+}
+.pupil input:focus{outline:none;border-bottom-color:var(--olive)}
+@media(max-width:560px){.pupil{grid-template-columns:1fr;gap:14px}}
+
+/* כרטיס לתלייה */
+.card{
+  border:2px solid var(--olive);
+  background:var(--cream-soft);
+  border-radius:6px;
+  padding:28px 22px;margin:26px 0
+}
+.card h3{font-size:clamp(25px,6vw,32px);line-height:1.2;margin-bottom:18px}
+.card .card-eyebrow{font-size:12.5px;font-weight:700;letter-spacing:.14em;color:var(--terra);margin-bottom:12px}
+.card .lines{display:flex;flex-wrap:wrap;gap:14px 22px;margin-bottom:22px}
+.card .lines .cell{flex:1 1 160px}
+.card .lines label{display:block;font-size:13.5px;font-weight:700;color:var(--ink-soft);margin-bottom:6px}
+.card .lines input{
+  width:100%;font:inherit;font-size:16px;border:0;
+  border-bottom:1.5px solid #c9c2ae;background:transparent;padding:4px 2px
+}
+.card .lines input:focus{outline:none;border-bottom-color:var(--olive)}
+
+.rules{display:flex;flex-direction:column;gap:14px;margin-bottom:22px}
+.rule-row{display:flex;gap:14px;align-items:flex-start}
+.chip{
+  flex:0 0 84px;text-align:center;
+  color:#fff;font-weight:700;font-size:14px;
+  padding:7px 6px;border-radius:4px;margin-top:2px
+}
+.chip.yes{background:var(--olive)}
+.chip.no{background:var(--terra)}
+.chip.watch{background:var(--gold)}
+.rule-row p{margin:0;font-size:16px}
+@media(max-width:480px){
+  .rule-row{flex-direction:column;gap:6px}
+  .chip{flex:0 0 auto;align-self:flex-start;padding:5px 16px}
+}
+.card .bottom{border-top:1px solid var(--line);padding-top:18px;color:var(--ink-soft);font-size:15.5px}
+
+/* ---------- הדפסה ---------- */
+.print-bar{margin:34px 0 10px;text-align:center}
+button.ghost{
+  font:inherit;font-weight:700;font-size:16px;
+  color:var(--olive-deep);background:#fff;
+  border:1.5px solid var(--olive);border-radius:10px;
+  padding:12px 26px;cursor:pointer
+}
+button.ghost:hover{background:var(--green-bg)}
+
+/* ---------- FOOTER ---------- */
+footer{
+  border-top:1px solid var(--line);
+  margin-top:46px;padding:22px 0 40px;
+  display:flex;justify-content:space-between;align-items:flex-start;gap:20px;
+  font-size:13.5px;color:var(--muted)
+}
+footer .handle{
+  color:var(--olive-deep);font-weight:700;white-space:nowrap;
+  direction:ltr;unicode-bidi:isolate /* כדי ש-@ יופיע לפני השם */
+}
+
+@media print{
+  @page{margin:14mm}
+  body{font-size:12pt}
+  #gate,.thanks,.print-bar{display:none !important}
+  #guide[hidden]{display:block !important}
+  .section,.card,.pupil,.note{break-inside:avoid}
+  .doc-head{padding-top:0}
+  input{border-bottom:1px solid #999 !important}
+}
+</style>
+</head>
+<body>
+
+<!-- ============================================================
+     החלק הסגור — טופס איסוף הלידים
+     ============================================================ -->
+<div id="gate">
+  <div class="wrap">
+
+    <section class="hero">
+      <p class="eyebrow">מדריך להורים ולצוות החינוכי</p>
+      <h1>צליאק בכיתה:<br>מה חשוב לדעת</h1>
+      <p class="lede">
+        מדריך קצר וברור להעברה למחנכת ולצוות בית הספר — מה זו המחלה, למה ההקפדה
+        חשובה, ומה באמת נדרש בשגרת הכיתה. בלי בהלה, בלי הרצאות, בלי להפוך את
+        היום־יום למסובך.
+      </p>
+      <div class="rule"></div>
+    </section>
+
+    <section class="inside">
+      <h2>מה יש בפנים</h2>
+      <ul>
+        <li>מה זה צליאק — ומה זה <em>לא</em> — בשפה פשוטה לצוות</li>
+        <li>למה גם פירור אחד משנה, גם כשאין תסמין</li>
+        <li>שישה כללים מעשיים ליום־יום בכיתה</li>
+        <li>מה עושים בימי הולדת, מסיבות וטיולים</li>
+        <li>כרטיס מוכן לתלייה בכיתה: מותר / אסור / לשים לב</li>
+      </ul>
+    </section>
+
+    <section class="form-card">
+      <h2>לקבלת המדריך המלא</h2>
+      <p class="sub">משאירים פרטים, והמדריך נפתח כאן מיד — אפשר לקרוא, להדפיס או לשמור כ־PDF.</p>
+
+      <form id="lead-form" novalidate>
+        <div class="field" id="f-name">
+          <label for="name">שם מלא</label>
+          <input type="text" id="name" name="name" autocomplete="name" placeholder="השם שלך">
+          <div class="err">נשמח לדעת איך לפנות אליך</div>
+        </div>
+
+        <div class="field" id="f-phone">
+          <label for="phone">טלפון</label>
+          <input type="tel" id="phone" name="phone" inputmode="tel" autocomplete="tel" placeholder="050-0000000">
+          <div class="err">מספר טלפון לא תקין</div>
+        </div>
+
+        <div class="field" id="f-email">
+          <label for="email">אימייל</label>
+          <input type="email" id="email" name="email" inputmode="email" autocomplete="email" placeholder="you@example.com">
+          <div class="err">כתובת אימייל לא תקינה</div>
+        </div>
+
+        <!-- מלכודת ספאם — נסתרת מבני אדם -->
+        <div class="hp" aria-hidden="true">
+          <label for="company">אל תמלאו שדה זה</label>
+          <input type="text" id="company" name="company" tabindex="-1" autocomplete="off">
+        </div>
+
+        <div class="consent">
+          <input type="checkbox" id="consent" name="consent" value="1">
+          <label for="consent">
+            אני מאשר/ת קבלת המדריך ותכנים נוספים בנושא במייל ובהודעות. אפשר להסיר את
+            ההרשמה בכל רגע.
+          </label>
+        </div>
+        <div class="field" id="f-consent"><div class="err">צריך לאשר כדי שנוכל לשלוח</div></div>
+
+        <button type="submit" class="cta" id="submit-btn">שלחו לי את המדריך</button>
+        <div class="form-error" id="form-error" role="alert"></div>
+        <p class="fineprint">הפרטים נשמרים אצלנו בלבד ואינם מועברים לגורם שלישי.</p>
+      </form>
+    </section>
+
+    <footer>
+      <p>המסמך הוא כלי הסבר כללי לצוות החינוכי. ההנחיות הפרטניות לילד/ה נקבעות מול ההורים.</p>
+      <p class="handle">@amalialev</p>
+    </footer>
+
+  </div>
+</div>
+
+<!-- ============================================================
+     המדריך — נחשף אחרי מילוי הטופס
+     ============================================================ -->
+<div id="guide" hidden>
+  <div class="wrap">
+
+    <section class="thanks">
+      <h2>תודה! המדריך פתוח כאן למטה</h2>
+      <p>אפשר לקרוא עכשיו, ובסוף העמוד יש כפתור להדפסה או לשמירה כ־PDF — כדי להעביר לצוות.</p>
+    </section>
+
+    <!-- ===== חלק 1 ===== -->
+    <div class="doc doc-head">
+      <p class="eyebrow">דף מידע לצוות החינוכי</p>
+      <h2>צליאק בכיתה:<br>מה חשוב לדעת</h2>
+      <p class="lede">
+        מסמך קצר להעברה למחנכת, לסייעת ולצוות בית הספר — מה זו המחלה, למה ההקפדה
+        חשובה, ומה באמת נדרש בשגרת הכיתה.
+      </p>
+      <div class="rule"></div>
+    </div>
+
+    <div class="pupil">
+      <div class="cell">
+        <label for="p-name">שם התלמיד/ה</label>
+        <input type="text" id="p-name">
+      </div>
+      <div class="cell">
+        <label for="p-class">כיתה</label>
+        <input type="text" id="p-class">
+      </div>
+      <div class="cell">
+        <label for="p-parent">הורה ליצירת קשר</label>
+        <input type="text" id="p-parent">
+      </div>
+    </div>
+
+    <section class="section">
+      <div class="section-title"><span class="num">1</span><h3>מה זה צליאק</h3></div>
+      <p>
+        צליאק היא <strong>מחלה אוטואימונית</strong> — לא אלרגיה ולא העדפה תזונתית.
+        אצל אדם עם צליאק, חלבון הגלוטן (המצוי בחיטה, שעורה ושיפון) גורם למערכת
+        החיסון לתקוף את רירית המעי הדק ולפגוע בסיסים הזעירים שאחראים על ספיגת המזון.
+      </p>
+      <p>
+        הטיפול היחיד הקיים כיום הוא <strong>הימנעות מלאה מגלוטן, לכל החיים</strong>.
+        אין תרופה ואין "מינון מותר".
+      </p>
+    </section>
+
+    <section class="section">
+      <div class="section-title"><span class="num">2</span><h3>למה גם טעימה קטנה משנה</h3></div>
+      <p>
+        כמות זעירה — פירור, כפית, ביס אחד מעוגה — מספיקה כדי להפעיל את התגובה
+        החיסונית ולגרום נזק לרירית המעי.
+      </p>
+      <p>
+        הנקודה הכי חשובה להבנה: <strong>לא תמיד יש תסמין מיידי.</strong> ילד/ה
+        יכול/ה לאכול משהו עם גלוטן ולהיראות בסדר גמור — והנזק בכל זאת מתרחש. לכן
+        ההקפדה לא נמדדת לפי איך שהילד/ה מרגיש/ה אחר כך.
+      </p>
+      <div class="note">
+        חשיפה חוזרת לאורך זמן עלולה לפגוע בספיגת ברזל, סידן וויטמינים, ולהשפיע על
+        גדילה, רמות אנרגיה, ריכוז ומצב רוח.
+      </div>
+    </section>
+
+    <section class="section">
+      <div class="section-title"><span class="num">3</span><h3>ומה זה לא</h3></div>
+      <p>
+        זו <strong>אינה אלרגיה מסכנת חיים</strong>. אין סכנה לתגובה אנפילקטית, אין
+        צורך במזרק אדרנלין, ואין סכנה מעצם הישיבה ליד ילד שאוכל לחם או מהריח של מאפים.
+      </p>
+      <p>
+        ההשפעה מגיעה מאכילה בפועל — כלומר מגלוטן שנכנס לפה, כולל דרך פירורים או ידיים.
+      </p>
+      <div class="note good">
+        <strong>בשורה התחתונה: אין צורך בבהלה — יש צורך בתשומת לב.</strong>
+        ברגע שהצוות מבין את הכללים הבסיסיים, השגרה של הילד/ה בכיתה פשוטה לחלוטין.
+      </div>
+    </section>
+
+    <!-- ===== חלק 2 ===== -->
+    <div class="doc doc-head">
+      <p class="eyebrow">המדריך המעשי</p>
+      <h2>מה עושים בפועל</h2>
+      <p class="lede">
+        שישה דברים שהופכים את היום־יום בכיתה לבטוח, בלי להפוך אותו למסובך.
+      </p>
+      <div class="rule"></div>
+    </div>
+
+    <section class="section">
+      <div class="section-title"><span class="num">1</span><h3>מה מכיל גלוטן</h3></div>
+      <ul>
+        <li><strong>הדגנים:</strong> חיטה, שעורה ושיפון — וגם כוסמין, בורגול, סולת וקוסקוס.</li>
+        <li><strong>מוצרים נפוצים:</strong> לחם ופיתה, מאפים ובורקסים, עוגות ועוגיות, פסטה, ציפוי של שניצל, דגני בוקר, חלק מהחטיפים והרטבים.</li>
+        <li><strong>שיבולת שועל:</strong> מותרת רק כשהיא מסומנת במפורש כללא גלוטן.</li>
+        <li><strong>הכלל הפשוט:</strong> אם אין סימון "ללא גלוטן" על האריזה — לא לתת, גם אם נראה שאין שם קמח.</li>
+      </ul>
+    </section>
+
+    <section class="section">
+      <div class="section-title"><span class="num">2</span><h3>זיהום צולב</h3></div>
+      <ul>
+        <li>פירורים על השולחן או במגירה משותפת.</li>
+        <li>סכין שנגעה בלחם רגיל וחזרה למרגרינה או לממרח.</li>
+        <li>טוסטר או מיקרוגל שמשמשים גם ללחם רגיל.</li>
+        <li>ידיים של ילדים אחרים אחרי אכילה, במיוחד במשחק משותף.</li>
+      </ul>
+    </section>
+
+    <section class="section">
+      <div class="section-title"><span class="num">3</span><h3>פעילויות שדורשות תשומת לב</h3></div>
+      <ul>
+        <li><strong>בצק משחק</strong> מכיל בדרך כלל קמח חיטה. אפשר להחליף בבצק ללא גלוטן או בפלסטלינה.</li>
+        <li><strong>יצירה עם קמח, פסטה או דגנים</strong> — שרשראות, הדבקות, ניסויים. שווה להתאים חומר חלופי מראש.</li>
+        <li><strong>אפייה או בישול בכיתה</strong> — לתאם עם ההורים לפני, ולא ביום עצמו.</li>
+      </ul>
+    </section>
+
+    <section class="section">
+      <div class="section-title"><span class="num">4</span><h3>ימי הולדת, מסיבות וטיולים</h3></div>
+      <ul>
+        <li>לעדכן את ההורים מראש על כל אירוע שכולל אוכל.</li>
+        <li>להחזיק בכיתה מלאי קבוע של חטיפים ועוגיות ללא גלוטן שההורים מספקים, כדי שתמיד תהיה חלופה זמינה.</li>
+        <li>המטרה: שהילד/ה יקבל/תקבל משהו <strong>שווה ערך</strong> ובאותו רגע — ולא יישאר/תישאר בצד.</li>
+      </ul>
+    </section>
+
+    <section class="section">
+      <div class="section-title"><span class="num">5</span><h3>אם נחשף/ה בטעות</h3></div>
+      <p>
+        לעדכן את ההורים. ייתכנו כאבי בטן, בחילה, שלשול, כאב ראש, עייפות או שינוי
+        במצב הרוח — לעיתים שעות לאחר מכן, ולעיתים בלי תסמין כלל.
+      </p>
+      <p>
+        <strong>אין צורך בטיפול חירום.</strong> מה שעוזר: מנוחה, שתייה, ועדכון
+        ההורים כדי שידעו מה קרה ומתי.
+      </p>
+    </section>
+
+    <section class="section">
+      <div class="section-title"><span class="num">6</span><h3>הצד החברתי</h3></div>
+      <p>
+        מה שהכי משפיע על ילד/ה עם צליאק בכיתה הוא לא הבטן, אלא ההרגשה של להיות
+        היוצא/ת דופן. הקפדה שקטה ומתוכננת מראש, בלי להסב תשומת לב בזמן אמת, עושה
+        את כל ההבדל.
+      </p>
+    </section>
+
+    <!-- ===== חלק 3 — כרטיס לתלייה ===== -->
+    <div class="card">
+      <p class="card-eyebrow">כרטיס לתלייה בכיתה · לגזור ולשמור</p>
+      <h3>בכיתה שלנו<br>יש ילד/ה עם צליאק</h3>
+
+      <div class="lines">
+        <div class="cell">
+          <label for="c-name">שם</label>
+          <input type="text" id="c-name">
+        </div>
+        <div class="cell">
+          <label for="c-class">כיתה</label>
+          <input type="text" id="c-class">
+        </div>
+      </div>
+
+      <div class="rules">
+        <div class="rule-row">
+          <span class="chip yes">מותר</span>
+          <p>כל מזון עם סימון ברור <strong>"ללא גלוטן"</strong>, וכן פירות, ירקות, ביצים, גבינות, אורז ותירס בצורתם הטבעית.</p>
+        </div>
+        <div class="rule-row">
+          <span class="chip no">אסור</span>
+          <p>חיטה, שעורה ושיפון — לחם, פיתה, מאפים, בורקס, עוגות, עוגיות, פסטה, ציפוי שניצל, וכל מוצר בלי סימון ללא גלוטן.</p>
+        </div>
+        <div class="rule-row">
+          <span class="chip watch">לשים לב</span>
+          <p>פירורים נחשבים. שולחן נקי, סכין נפרדת, ידיים שטופות. בצק משחק ויצירה עם קמח — לתאם חלופה מראש.</p>
+        </div>
+      </div>
+
+      <div class="lines">
+        <div class="cell">
+          <label for="c-phone1">טלפון הורה</label>
+          <input type="tel" id="c-phone1">
+        </div>
+        <div class="cell">
+          <label for="c-phone2">טלפון נוסף</label>
+          <input type="tel" id="c-phone2">
+        </div>
+      </div>
+
+      <p class="bottom">
+        זו אינה אלרגיה מסכנת חיים ואין צורך במזרק אדרנלין. אין סכנה מקרבה לגלוטן —
+        רק מאכילה שלו. אין צורך בבהלה, יש צורך בתשומת לב.
+      </p>
+    </div>
+
+    <div class="print-bar">
+      <button type="button" class="ghost" id="print-btn">הדפסה / שמירה כ־PDF</button>
+    </div>
+
+    <footer>
+      <p>המסמך הוא כלי הסבר כללי לצוות החינוכי. ההנחיות הפרטניות לילד/ה — כולל רגישויות נוספות, תרופות או מצבים מיוחדים — נקבעות מול ההורים.</p>
+      <p class="handle">@amalialev</p>
+    </footer>
+
+  </div>
+</div>
+
+<!-- יעד השליחה של הטופס — נשאר נסתר כדי שהגולש/ת לא ינווט/תנווט לדף של בראבו -->
+<iframe name="bravo_sink" id="bravo_sink" title="שליחה" style="display:none" aria-hidden="true"></iframe>
+
+<script>
+/* ============================================================
+   ✦ הגדרות בראבו — זה החלק היחיד שצריך לערוך ✦
+   ------------------------------------------------------------
+   action  = כתובת ה-action של הטופס מבראבו (מתוך קוד ההטמעה)
+   fields  = שמות השדות (ה-name) שבראבו מצפה לקבל
+   extra   = שדות נסתרים נוספים שבראבו דורש, אם יש
+             (למשל מזהה רשימה, טוקן, כתובת דף תודה)
+   כל עוד action ריק — העמוד עובד במצב הדגמה: הטופס לא נשלח לשום
+   מקום, והמדריך פשוט נפתח.
+   ============================================================ */
+var BRAVO = {
+  action: "",
+  fields: {
+    name:    "name",
+    phone:   "phone",
+    email:   "email",
+    consent: "consent"
+  },
+  extra: {
+    // "list_id": "12345",
+    // "token": "xxxxxxxx"
+  }
+};
+
+/* מקור הליד — מגיע מהלינק במאניצ'ט, לדוגמה:
+   .../index.html?src=manychat  →  יישלח לבראבו בשדה source אם הוא קיים אצלך */
+var SOURCE_FIELD = "source";
+
+(function () {
+  "use strict";
+
+  var form     = document.getElementById("lead-form");
+  var gate     = document.getElementById("gate");
+  var guide    = document.getElementById("guide");
+  var btn      = document.getElementById("submit-btn");
+  var formErr  = document.getElementById("form-error");
+  var STORAGE  = "celiac-guide-unlocked";
+
+  /* ---------- מי שכבר מילא — לא ממלא שוב ---------- */
+  try {
+    if (localStorage.getItem(STORAGE) === "1") { unlock(false); }
+  } catch (e) { /* דפדפן חוסם אחסון — לא נורא */ }
+
+  /* ---------- ולידציה ---------- */
+  function setBad(id, bad) {
+    var wrap = document.getElementById(id);
+    if (!wrap) return;
+    wrap.classList.toggle("is-bad", bad);
+    var input = wrap.querySelector("input");
+    if (input) input.setAttribute("aria-invalid", bad ? "true" : "false");
+  }
+
+  function validPhone(v) {
+    var d = v.replace(/[^\d]/g, "").replace(/^972/, "0");
+    return /^0\d{8,9}$/.test(d);
+  }
+
+  function validEmail(v) {
+    return /^[^\s@]+@[^\s@]+\.[^\s@]{2,}$/.test(v);
+  }
+
+  function validate(vals) {
+    var ok = true;
+    var nameBad    = vals.name.length < 2;
+    var phoneBad   = !validPhone(vals.phone);
+    var emailBad   = !validEmail(vals.email);
+    var consentBad = !vals.consent;
+
+    setBad("f-name", nameBad);
+    setBad("f-phone", phoneBad);
+    setBad("f-email", emailBad);
+    document.getElementById("f-consent").classList.toggle("is-bad", consentBad);
+
+    if (nameBad || phoneBad || emailBad || consentBad) ok = false;
+    if (!ok) {
+      var first = form.querySelector(".is-bad input");
+      if (first) first.focus();
+    }
+    return ok;
+  }
+
+  /* ---------- שליחה לבראבו דרך iframe נסתר ---------- */
+  function sendToBravo(vals) {
+    var f = document.createElement("form");
+    f.method = "post";
+    f.action = BRAVO.action;
+    f.target = "bravo_sink";
+    f.style.display = "none";
+    f.acceptCharset = "UTF-8";
+
+    var payload = {};
+    payload[BRAVO.fields.name]  = vals.name;
+    payload[BRAVO.fields.phone] = vals.phone;
+    payload[BRAVO.fields.email] = vals.email;
+    if (BRAVO.fields.consent) payload[BRAVO.fields.consent] = "1";
+
+    var src = new URLSearchParams(location.search).get("src");
+    if (src && SOURCE_FIELD) payload[SOURCE_FIELD] = src;
+
+    Object.keys(BRAVO.extra || {}).forEach(function (k) {
+      payload[k] = BRAVO.extra[k];
+    });
+
+    Object.keys(payload).forEach(function (k) {
+      var i = document.createElement("input");
+      i.type = "hidden";
+      i.name = k;
+      i.value = payload[k];
+      f.appendChild(i);
+    });
+
+    document.body.appendChild(f);
+    f.submit();
+    setTimeout(function () { f.remove(); }, 4000);
+  }
+
+  /* ---------- פתיחת המדריך ---------- */
+  function unlock(scroll) {
+    gate.hidden = true;
+    guide.hidden = false;
+    if (scroll !== false) window.scrollTo(0, 0);
+  }
+
+  form.addEventListener("submit", function (ev) {
+    ev.preventDefault();
+    formErr.classList.remove("show");
+
+    /* בוט מילא את המלכודת — מציגים "הצלחה" ולא שולחים כלום */
+    if (document.getElementById("company").value) { unlock(true); return; }
+
+    var vals = {
+      name:    document.getElementById("name").value.trim(),
+      phone:   document.getElementById("phone").value.trim(),
+      email:   document.getElementById("email").value.trim(),
+      consent: document.getElementById("consent").checked
+    };
+
+    if (!validate(vals)) return;
+
+    btn.disabled = true;
+    btn.textContent = "שולח…";
+
+    try {
+      if (BRAVO.action) {
+        sendToBravo(vals);
+      } else {
+        console.warn("[מדריך צליאק] BRAVO.action ריק — הליד לא נשלח לשום מקום (מצב הדגמה).");
+      }
+      try { localStorage.setItem(STORAGE, "1"); } catch (e) {}
+      setTimeout(function () { unlock(true); }, 350);
+    } catch (e) {
+      btn.disabled = false;
+      btn.textContent = "שלחו לי את המדריך";
+      formErr.textContent = "משהו השתבש בשליחה. אפשר לנסות שוב בעוד רגע.";
+      formErr.classList.add("show");
+    }
+  });
+
+  /* ---------- ולידציה מחדש תוך כדי תיקון ---------- */
+  ["name", "phone", "email"].forEach(function (id) {
+    document.getElementById(id).addEventListener("input", function () {
+      setBad("f-" + id, false);
+    });
+  });
+  document.getElementById("consent").addEventListener("change", function () {
+    document.getElementById("f-consent").classList.remove("is-bad");
+  });
+
+  document.getElementById("print-btn").addEventListener("click", function () {
+    window.print();
+  });
+})();
+</script>
+</body>
+</html>
