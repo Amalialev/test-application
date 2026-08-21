@@ -232,14 +232,21 @@ button.cta[disabled]{opacity:.65;cursor:default}
 .card .bottom{border-top:1px solid var(--line);padding-top:18px;color:var(--ink-soft);font-size:15.5px}
 
 /* ---------- הדפסה ---------- */
-.print-bar{margin:34px 0 10px;text-align:center}
+.print-bar{margin:34px 0 10px;display:flex;flex-wrap:wrap;gap:12px;justify-content:center}
 button.ghost{
   font:inherit;font-weight:700;font-size:16px;
   color:var(--olive-deep);background:#fff;
   border:1.5px solid var(--olive);border-radius:10px;
-  padding:12px 26px;cursor:pointer
+  padding:12px 26px;cursor:pointer;
+  flex:1 1 220px;max-width:320px
 }
 button.ghost:hover{background:var(--green-bg)}
+button.ghost.solid{background:var(--olive-deep);border-color:var(--olive-deep);color:#fff}
+button.ghost.solid:hover{background:#516348}
+.print-hint{
+  text-align:center;font-size:13.5px;color:var(--muted);
+  margin:12px auto 0;max-width:460px
+}
 
 /* ---------- FOOTER ---------- */
 footer{
@@ -256,7 +263,7 @@ footer .handle{
 @media print{
   @page{margin:14mm}
   body{font-size:12pt}
-  #gate,.thanks,.print-bar{display:none !important}
+  #gate,.thanks,.print-bar,.print-hint{display:none !important}
   #guide[hidden]{display:block !important}
   .section,.card,.pupil,.note{break-inside:avoid}
   .doc-head{padding-top:0}
@@ -452,7 +459,7 @@ footer .handle{
       <div class="section-title"><span class="num">2</span><h3>זיהום צולב</h3></div>
       <ul>
         <li>פירורים על השולחן או במגירה משותפת.</li>
-        <li>סכין שנגעה בלחם רגיל וחזרה למרגרינה או לממרח.</li>
+        <li>סכין שנגעה בלחם רגיל וחזרה לחמאה או לצנצנת הממרח.</li>
         <li>טוסטר או מיקרוגל שמשמשים גם ללחם רגיל.</li>
         <li>ידיים של ילדים אחרים אחרי אכילה, במיוחד במשחק משותף.</li>
       </ul>
@@ -546,8 +553,13 @@ footer .handle{
     </div>
 
     <div class="print-bar">
+      <button type="button" class="ghost solid" id="download-btn">הורדת המדריך לשמירה</button>
       <button type="button" class="ghost" id="print-btn">הדפסה / שמירה כ־PDF</button>
     </div>
+    <p class="print-hint">
+      ההורדה שומרת את המדריך כקובץ שנפתח בכל דפדפן, גם בלי אינטרנט — כולל מה
+      שהקלדתם בשדות. מה שהוקלד נשמר גם בהדפסה.
+    </p>
 
     <footer>
       <p>המסמך הוא כלי הסבר כללי לצוות החינוכי. ההנחיות הפרטניות לילד/ה — כולל רגישויות נוספות, תרופות או מצבים מיוחדים — נקבעות מול ההורים.</p>
@@ -731,6 +743,63 @@ var SOURCE_FIELD = "source";
 
   document.getElementById("print-btn").addEventListener("click", function () {
     window.print();
+  });
+
+  /* ---------- הורדת המדריך כקובץ לשמירה ---------- */
+  var FONTS_HREF = "https://fonts.googleapis.com/css2?family=Assistant:wght@400;600;700&family=Frank+Ruhl+Libre:wght@700;900&display=swap";
+  /* שם הקובץ באותיות לטיניות בכוונה: דפדפנים מסוימים פוסלים שם קובץ בעברית
+     ומורידים אותו בשם "download" בלי סיומת, כך שהוא לא נפתח בלחיצה */
+  var FILENAME = "madrich-celiac-bekita.html";
+
+  function buildGuideFile() {
+    var clone = guide.cloneNode(true);
+
+    /* מעתיקים לקובץ את מה שהוקלד בשדות (שם התלמיד/ה, טלפונים וכו') */
+    var live = guide.querySelectorAll("input");
+    var copy = clone.querySelectorAll("input");
+    for (var i = 0; i < live.length; i++) {
+      copy[i].setAttribute("value", live[i].value);
+    }
+
+    /* מסירים מהקובץ את מה ששייך לעמוד עצמו */
+    var drop = clone.querySelectorAll(".thanks, .print-bar, .print-hint");
+    for (var j = 0; j < drop.length; j++) drop[j].parentNode.removeChild(drop[j]);
+    clone.removeAttribute("hidden");
+
+    var css = "";
+    var sheets = document.querySelectorAll("style");
+    for (var k = 0; k < sheets.length; k++) css += sheets[k].textContent;
+
+    return '<!doctype html>\n<html lang="he" dir="rtl">\n<head>\n' +
+      '<meta charset="utf-8">\n' +
+      '<meta name="viewport" content="width=device-width, initial-scale=1">\n' +
+      '<title>צליאק בכיתה: מה חשוב לדעת</title>\n' +
+      '<link rel="preconnect" href="https://fonts.googleapis.com">\n' +
+      '<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>\n' +
+      '<link href="' + FONTS_HREF + '" rel="stylesheet">\n' +
+      '<style>' + css + '</style>\n</head>\n<body>\n' +
+      clone.outerHTML +
+      '\n</body>\n</html>';
+  }
+
+  document.getElementById("download-btn").addEventListener("click", function () {
+    var html = buildGuideFile();
+    var blob = new Blob([html], { type: "text/html;charset=utf-8" });
+    var url = URL.createObjectURL(blob);
+    var a = document.createElement("a");
+
+    if ("download" in a) {
+      a.href = url;
+      a.download = FILENAME;
+      a.rel = "noopener";
+      document.body.appendChild(a);
+      a.click();
+      a.parentNode.removeChild(a);
+    } else {
+      /* דפדפנים ישנים (בעיקר iOS ותיק) — פותחים בלשונית ומשם "שמור" */
+      window.open(url, "_blank");
+    }
+    setTimeout(function () { URL.revokeObjectURL(url); }, 20000);
   });
 })();
 </script>
