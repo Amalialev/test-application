@@ -654,9 +654,11 @@ footer .handle{
      משנים כאן, בדיוק כפי שהוא מופיע ב-name= בקוד ההטמעה.
      ════════════════════════════════════════════════════════════ */
   var FIELDS = {
-    name:  "FIRSTNAME",
-    email: "EMAIL",
-    phone: "SMS"
+    name:    "FIRSTNAME",
+    email:   "EMAIL",
+    phone:   "SMS",
+    consent: "OPT_IN",   /* קיים בחשבון כ-boolean */
+    source:  "SOURCE"    /* קיים בחשבון כ-text */
   };
 
   /* שדות נסתרים ש-Brevo מצרף לטופס שלו. email_address_check היא
@@ -727,6 +729,14 @@ footer .handle{
      טופס נסתר שנשלח לתוך iframe נסתר: הגולש/ת נשארת בעמוד, ואין
      צורך בהגדרות CORS. הטלפון מנורמל ל-‎+972 כי זה מה ש-Brevo
      דורש בשדה SMS. */
+  /* מקור הליד. ‎?src=manychat בסוף הכתובת → נשמר בשדה SOURCE ב-Brevo,
+     כך שרואים בדיוק מאיזה ערוץ הגיע כל נרשם. בלי פרמטר — "direct". */
+  function leadSource() {
+    try {
+      return new URLSearchParams(location.search).get("src") || "direct";
+    } catch (e) { return "direct"; }
+  }
+
   function normalizePhone(v) {
     var d = String(v).replace(/[^\d]/g, "").replace(/^972/, "0");
     return "+972" + d.replace(/^0/, "");
@@ -739,6 +749,8 @@ footer .handle{
     payload[FIELDS.name]  = vals.name;
     payload[FIELDS.email] = vals.email;
     payload[FIELDS.phone] = normalizePhone(vals.phone);
+    if (FIELDS.consent) payload[FIELDS.consent] = "1";
+    if (FIELDS.source)  payload[FIELDS.source]  = leadSource();
     Object.keys(HIDDEN).forEach(function (k) { payload[k] = HIDDEN[k]; });
 
     var f = document.createElement("form");
