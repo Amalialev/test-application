@@ -4,6 +4,24 @@
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
 <title>צליאק בכיתה: מה חשוב לדעת — המדריך לצוות החינוכי</title>
+
+<!-- ══════════════════════════════════════════════════════════════
+     ↓↓↓  זה כל מה שצריך לערוך בקובץ הזה  ↓↓↓
+
+     מדביקים בין הגרשיים את כתובת הטופס מ-Brevo.
+     איפה מוצאים אותה: Brevo → Contacts → Forms → הטופס שלך →
+     Share / Embed, ושם מחפשים בקוד את השורה
+        <form action="https://sibforms.com/serve/MUIF..."
+     מעתיקים רק את הכתובת עצמה.
+
+     כל עוד השורה ריקה, יופיע בראש העמוד פס אזהרה אדום
+     שאומר שהעמוד לא מחובר — כדי שלא תעלי לאוויר בלי לשים לב.
+     ══════════════════════════════════════════════════════════════ -->
+<script>
+var BREVO_FORM_URL = "";
+</script>
+<!-- ↑↑↑  עד כאן. כל השאר עובד מעצמו.  ↑↑↑ -->
+
 <meta name="description" content="מדריך קצר וברור להעברה למחנכת ולצוות בית הספר: מה זה צליאק, למה ההקפדה חשובה, ומה באמת נדרש בשגרת הכיתה.">
 <meta property="og:title" content="צליאק בכיתה: מה חשוב לדעת">
 <meta property="og:description" content="המדריך לצוות החינוכי — כולל כרטיס לתלייה בכיתה.">
@@ -35,6 +53,7 @@
 }
 *{box-sizing:border-box}
 html{-webkit-text-size-adjust:100%}
+html,body{overflow-x:hidden}
 body{
   margin:0;
   background:var(--bg);
@@ -50,7 +69,18 @@ strong{font-weight:700}
 .wrap{max-width:var(--maxw);margin:0 auto;padding:0 20px}
 .eyebrow{
   font-size:13px;font-weight:700;letter-spacing:.16em;
-  color:var(--terra);text-transform:none;margin:0 0 14px
+  color:var(--terra);margin:0 0 14px
+}
+
+/* ---------- פס אזהרה: העמוד לא מחובר ל-Brevo ---------- */
+#not-connected{
+  background:#8e3f24;color:#fff;
+  padding:12px 20px;font-size:15px;font-weight:600;
+  text-align:center;line-height:1.5
+}
+#not-connected code{
+  background:rgba(255,255,255,.18);padding:1px 6px;border-radius:4px;
+  font-size:14px;direction:ltr;display:inline-block
 }
 
 /* ---------- HERO ---------- */
@@ -112,12 +142,11 @@ strong{font-weight:700}
 .consent{display:flex;gap:10px;align-items:flex-start;margin:18px 0 6px}
 .consent input{margin:6px 0 0;width:19px;height:19px;flex:0 0 auto;accent-color:var(--olive-deep)}
 .consent label{font-size:14.5px;color:var(--ink-soft);line-height:1.6}
-/* הסתרה נגישה, בלי למקם מחוץ למסך — מיקום שלילי יוצר גלילה אופקית ב-RTL */
+/* הסתרה נגישה, בלי מיקום שלילי שיוצר גלילה אופקית ב-RTL */
 .hp{
   position:absolute;width:1px;height:1px;padding:0;margin:-1px;border:0;
   overflow:hidden;clip:rect(0 0 0 0);clip-path:inset(50%);white-space:nowrap
 }
-html,body{overflow-x:hidden}
 
 button.cta{
   width:100%;
@@ -144,13 +173,33 @@ button.cta[disabled]{opacity:.65;cursor:default}
   background:var(--green-bg);
   border-inline-start:5px solid var(--olive-deep);
   border-radius:var(--radius);
-  padding:20px 20px;margin:36px 0 10px
+  padding:20px 20px;margin:36px 0 22px
 }
 .thanks h2{font-size:22px;margin-bottom:8px}
 .thanks p{color:var(--ink-soft);margin:0}
 
+/* תוכן עניינים — קפיצה מהירה, בעיקר בשביל מובייל */
+.toc{
+  border:1px solid var(--line);border-radius:var(--radius);
+  padding:18px 20px;margin-bottom:10px
+}
+.toc h2{font-size:15px;letter-spacing:.06em;color:var(--muted);margin-bottom:12px}
+.toc ol{margin:0;padding:0;list-style:none;counter-reset:toc}
+.toc li{counter-increment:toc;margin-bottom:9px}
+.toc li:last-child{margin-bottom:0}
+.toc a{
+  color:var(--ink);text-decoration:none;font-weight:600;
+  border-bottom:1.5px solid var(--line);padding-bottom:1px
+}
+.toc a:hover{border-bottom-color:var(--olive)}
+/* בלי נקודה אחרי המספר — ב-RTL היא נופלת בצד הלא נכון */
+.toc li::before{
+  content:counter(toc);color:var(--terra);font-weight:700;
+  margin-inline-end:10px
+}
+
 .doc{padding:8px 0 0}
-.doc-head{padding:34px 0 0}
+.doc-head{padding:34px 0 0;scroll-margin-top:16px}
 .doc-head h2{font-size:clamp(27px,6.5vw,36px);margin-bottom:14px}
 .doc-head .lede{color:var(--ink-soft)}
 
@@ -201,7 +250,8 @@ button.cta[disabled]{opacity:.65;cursor:default}
   border:2px solid var(--olive);
   background:var(--cream-soft);
   border-radius:6px;
-  padding:28px 22px;margin:26px 0
+  padding:28px 22px;margin:26px 0;
+  scroll-margin-top:16px
 }
 .card h3{font-size:clamp(25px,6vw,32px);line-height:1.2;margin-bottom:18px}
 .card .card-eyebrow{font-size:12.5px;font-weight:700;letter-spacing:.14em;color:var(--terra);margin-bottom:12px}
@@ -231,8 +281,9 @@ button.cta[disabled]{opacity:.65;cursor:default}
 }
 .card .bottom{border-top:1px solid var(--line);padding-top:18px;color:var(--ink-soft);font-size:15.5px}
 
-/* ---------- הדפסה ---------- */
-.print-bar{margin:34px 0 10px;display:flex;flex-wrap:wrap;gap:12px;justify-content:center}
+/* ---------- שמירה והדפסה ---------- */
+.actions{margin:34px 0 10px;display:flex;flex-wrap:wrap;gap:12px;justify-content:center}
+.actions.top{margin:0 0 30px}
 button.ghost{
   font:inherit;font-weight:700;font-size:16px;
   color:var(--olive-deep);background:#fff;
@@ -243,7 +294,7 @@ button.ghost{
 button.ghost:hover{background:var(--green-bg)}
 button.ghost.solid{background:var(--olive-deep);border-color:var(--olive-deep);color:#fff}
 button.ghost.solid:hover{background:#516348}
-.print-hint{
+.actions-hint{
   text-align:center;font-size:13.5px;color:var(--muted);
   margin:12px auto 0;max-width:460px
 }
@@ -263,7 +314,7 @@ footer .handle{
 @media print{
   @page{margin:14mm}
   body{font-size:12pt}
-  #gate,.thanks,.print-bar,.print-hint{display:none !important}
+  #not-connected,#gate,.thanks,.toc,.actions,.actions-hint{display:none !important}
   #guide[hidden]{display:block !important}
   .section,.card,.pupil,.note{break-inside:avoid}
   .doc-head{padding-top:0}
@@ -272,6 +323,13 @@ footer .handle{
 </style>
 </head>
 <body>
+
+<!-- אזהרת התקנה — מוצגת רק כשהעמוד לא מחובר ל-Brevo -->
+<div id="not-connected" hidden>
+  ⚠ העמוד עדיין לא מחובר ל־Brevo. הטופס נראה עובד אבל
+  <strong>הפרטים לא נשמרים בשום מקום.</strong>
+  להשלמה: למלא את <code>BREVO_FORM_URL</code> בראש הקובץ.
+</div>
 
 <!-- ============================================================
      החלק הסגור — טופס איסוף הלידים
@@ -303,14 +361,9 @@ footer .handle{
 
     <section class="form-card">
       <h2>לקבלת המדריך המלא</h2>
-      <p class="sub">משאירים פרטים, והמדריך נפתח כאן מיד — אפשר לקרוא, להדפיס או לשמור כ־PDF.</p>
+      <p class="sub">משאירים פרטים, והמדריך נפתח כאן מיד — אפשר לקרוא, להוריד או להדפיס.</p>
 
-      <!-- name + data-netlify נדרשים כדי ש-Netlify יזהה את הטופס בזמן הדיפלוי.
-           כשלא מארחים ב-Netlify הם פשוט לא עושים כלום. -->
-      <form id="lead-form" name="celiac-guide-leads" novalidate
-            data-netlify="true" data-netlify-honeypot="company">
-        <input type="hidden" name="form-name" value="celiac-guide-leads">
-        <input type="hidden" name="source" id="source-field">
+      <form id="lead-form" novalidate>
         <div class="field" id="f-name">
           <label for="name">שם מלא</label>
           <input type="text" id="name" name="name" autocomplete="name" placeholder="השם שלך">
@@ -329,7 +382,7 @@ footer .handle{
           <div class="err">כתובת אימייל לא תקינה</div>
         </div>
 
-        <!-- מלכודת ספאם — נסתרת מבני אדם -->
+        <!-- מלכודת ספאם — נסתרת מבני אדם, בוטים ממלאים אותה -->
         <div class="hp" aria-hidden="true">
           <label for="company">אל תמלאו שדה זה</label>
           <input type="text" id="company" name="company" tabindex="-1" autocomplete="off">
@@ -366,11 +419,25 @@ footer .handle{
 
     <section class="thanks">
       <h2>תודה! המדריך פתוח כאן למטה</h2>
-      <p>אפשר לקרוא עכשיו, ובסוף העמוד יש כפתור להדפסה או לשמירה כ־PDF — כדי להעביר לצוות.</p>
+      <p>אפשר לקרוא עכשיו, להוריד לשמירה, או להדפיס — כדי להעביר לצוות.</p>
     </section>
 
+    <div class="actions top">
+      <button type="button" class="ghost solid" id="download-btn-top">הורדת המדריך לשמירה</button>
+      <button type="button" class="ghost" id="print-btn-top">הדפסה / שמירה כ־PDF</button>
+    </div>
+
+    <nav class="toc" aria-label="תוכן העניינים">
+      <h2>תוכן העניינים</h2>
+      <ol>
+        <li><a href="#part-1">דף מידע לצוות — מה זה צליאק</a></li>
+        <li><a href="#part-2">המדריך המעשי — מה עושים בפועל</a></li>
+        <li><a href="#part-3">כרטיס לתלייה בכיתה</a></li>
+      </ol>
+    </nav>
+
     <!-- ===== חלק 1 ===== -->
-    <div class="doc doc-head">
+    <div class="doc doc-head" id="part-1">
       <p class="eyebrow">דף מידע לצוות החינוכי</p>
       <h2>צליאק בכיתה:<br>מה חשוב לדעת</h2>
       <p class="lede">
@@ -441,7 +508,7 @@ footer .handle{
     </section>
 
     <!-- ===== חלק 2 ===== -->
-    <div class="doc doc-head">
+    <div class="doc doc-head" id="part-2">
       <p class="eyebrow">המדריך המעשי</p>
       <h2>מה עושים בפועל</h2>
       <p class="lede">
@@ -510,7 +577,7 @@ footer .handle{
     </section>
 
     <!-- ===== חלק 3 — כרטיס לתלייה ===== -->
-    <div class="card">
+    <div class="card" id="part-3">
       <p class="card-eyebrow">כרטיס לתלייה בכיתה · לגזור ולשמור</p>
       <h3>בכיתה שלנו<br>יש ילד/ה עם צליאק</h3>
 
@@ -557,11 +624,11 @@ footer .handle{
       </p>
     </div>
 
-    <div class="print-bar">
+    <div class="actions">
       <button type="button" class="ghost solid" id="download-btn">הורדת המדריך לשמירה</button>
       <button type="button" class="ghost" id="print-btn">הדפסה / שמירה כ־PDF</button>
     </div>
-    <p class="print-hint">
+    <p class="actions-hint">
       ההורדה שומרת את המדריך כקובץ שנפתח בכל דפדפן, גם בלי אינטרנט — כולל מה
       שהקלדתם בשדות. מה שהוקלד נשמר גם בהדפסה.
     </p>
@@ -574,80 +641,45 @@ footer .handle{
   </div>
 </div>
 
-<!-- יעד השליחה של הטופס — נשאר נסתר כדי שהגולש/ת לא ינווט/תנווט לדף התודה של Brevo -->
+<!-- יעד השליחה — נסתר, כדי שהגולש/ת לא תנווט לדף התודה של Brevo -->
 <iframe name="lead_sink" id="lead_sink" title="שליחה" style="display:none" aria-hidden="true"></iframe>
 
 <script>
-/* ============================================================
-   ✦ יעד הלידים — זה החלק היחיד שצריך לערוך ✦
-   ------------------------------------------------------------
-   mode — לאן נשלח הליד:
-
-   "demo"     הליד לא נשלח לשום מקום. המדריך פשוט נפתח.
-              לבדיקות עיצוב בלבד — לא להשאיר כך באוויר.
-
-   "netlify"  הלידים נאספים אצל Netlify, עם כפתור ייצוא ל-CSV
-              בדשבורד. עובד רק אם העמוד מאוחסן ב-Netlify.
-              לא צריך להגדיר שום דבר נוסף כאן.
-
-   "post"     הליד נשלח ישירות ליעד חיצוני — Brevo, טופס גוגל, וכו'.
-              ממלאים action + fields (+ extra אם צריך).
-
-   אפשר להתחיל ב-"netlify", לאסוף לידים, ולעבור ל-"post" מול Brevo
-   בהמשך — בלי לשנות שום דבר אחר בעמוד.
-   ============================================================ */
-var LEAD = {
-  mode: "demo",
-
-  /* פורמט הטלפון שנשלח:
-     "intl"  → ‎+972521234567   (מה ש-Brevo מצפה לו בשדה SMS)
-     "local" → 0521234567 */
-  phoneFormat: "intl",
-
-  /* ↓ רלוונטי רק ל-mode: "post" ↓
-     action = ה-action של הטופס מתוך קוד ההטמעה של Brevo,
-              בדרך כלל בצורה https://sibforms.com/serve/XXXXXXXX
-     fields = שמות השדות (ה-name) שהיעד מצפה לקבל.
-              ב-Brevo הם באותיות גדולות: EMAIL, FIRSTNAME, SMS
-     extra  = שדות נסתרים נוספים מקוד ההטמעה */
-  action: "",
-  fields: {
-    name:    "FIRSTNAME",
-    phone:   "SMS",
-    email:   "EMAIL",
-    consent: "OPT_IN",
-    source:  "SOURCE"
-  },
-  extra: {
-    /* Brevo שולח גם את אלה בקוד ההטמעה שלו.
-       email_address_check חייב להישאר ריק — זו מלכודת הספאם שלהם. */
-    // "email_address_check": "",
-    // "locale": "he",
-    // "html_type": "simple"
-  },
-
-  /* ↓ רלוונטי רק ל-mode: "netlify" ↓
-     חייב להיות זהה ל-name של הטופס ב-HTML למעלה */
-  netlifyFormName: "celiac-guide-leads"
-};
-
 (function () {
   "use strict";
 
-  var form     = document.getElementById("lead-form");
-  var gate     = document.getElementById("gate");
-  var guide    = document.getElementById("guide");
-  var btn      = document.getElementById("submit-btn");
-  var formErr  = document.getElementById("form-error");
-  var STORAGE  = "celiac-guide-unlocked";
+  /* ════════════════════════════════════════════════════════════
+     שמות השדות של Brevo.
+     כמעט תמיד אלה הם, ואין מה לגעת. אם יצרת בטופס שדה בשם אחר —
+     משנים כאן, בדיוק כפי שהוא מופיע ב-name= בקוד ההטמעה.
+     ════════════════════════════════════════════════════════════ */
+  var FIELDS = {
+    name:  "FIRSTNAME",
+    email: "EMAIL",
+    phone: "SMS"
+  };
 
-  /* ---------- מקור הליד מהלינק: ‎?src=manychat ---------- */
-  (function () {
-    var f = document.getElementById("source-field");
-    try {
-      if (f) f.value = new URLSearchParams(location.search).get("src") || "";
-    } catch (e) {}
-  })();
+  /* שדות נסתרים ש-Brevo מצרף לטופס שלו. email_address_check היא
+     מלכודת הספאם שלהם וחייבת להישלח ריקה. */
+  var HIDDEN = {
+    email_address_check: "",
+    locale: "en",
+    html_type: "simple"
+  };
+
+  var form    = document.getElementById("lead-form");
+  var gate    = document.getElementById("gate");
+  var guide   = document.getElementById("guide");
+  var btn     = document.getElementById("submit-btn");
+  var formErr = document.getElementById("form-error");
+  var STORAGE = "celiac-guide-unlocked";
+  var connected = typeof BREVO_FORM_URL === "string" && BREVO_FORM_URL.trim() !== "";
+
+  /* ---------- אזהרה גלויה כשהעמוד לא מחובר ---------- */
+  if (!connected) {
+    document.getElementById("not-connected").hidden = false;
+    console.warn("[מדריך צליאק] BREVO_FORM_URL ריק — הלידים לא נשמרים בשום מקום.");
+  }
 
   /* ---------- מי שכבר מילא — לא ממלא שוב ---------- */
   try {
@@ -673,7 +705,6 @@ var LEAD = {
   }
 
   function validate(vals) {
-    var ok = true;
     var nameBad    = vals.name.length < 2;
     var phoneBad   = !validPhone(vals.phone);
     var emailBad   = !validEmail(vals.email);
@@ -684,51 +715,38 @@ var LEAD = {
     setBad("f-email", emailBad);
     document.getElementById("f-consent").classList.toggle("is-bad", consentBad);
 
-    if (nameBad || phoneBad || emailBad || consentBad) ok = false;
-    if (!ok) {
+    if (nameBad || phoneBad || emailBad || consentBad) {
       var first = form.querySelector(".is-bad input");
       if (first) first.focus();
+      return false;
     }
-    return ok;
+    return true;
   }
 
-  /* ---------- נרמול טלפון ----------
-     Brevo מצפה למספר בפורמט בינלאומי בשדה SMS: 0521234567 → ‎+972521234567 */
+  /* ---------- שליחה ל-Brevo ----------
+     טופס נסתר שנשלח לתוך iframe נסתר: הגולש/ת נשארת בעמוד, ואין
+     צורך בהגדרות CORS. הטלפון מנורמל ל-‎+972 כי זה מה ש-Brevo
+     דורש בשדה SMS. */
   function normalizePhone(v) {
     var d = String(v).replace(/[^\d]/g, "").replace(/^972/, "0");
-    if (LEAD.phoneFormat === "local") return d;
     return "+972" + d.replace(/^0/, "");
   }
 
-  function leadSource() {
-    try {
-      return new URLSearchParams(location.search).get("src") || "";
-    } catch (e) { return ""; }
-  }
-
-  /* ---------- מצב "post": שליחה ליעד חיצוני דרך iframe נסתר ----------
-     ה-iframe מונע ניווט לדף התודה של היעד, ופותר את עניין ה-CORS */
-  function sendPost(vals) {
-    var f = document.createElement("form");
-    f.method = "post";
-    f.action = LEAD.action;
-    f.target = "lead_sink";
-    f.style.display = "none";
-    f.acceptCharset = "UTF-8";
+  function sendLead(vals) {
+    if (!connected) return;
 
     var payload = {};
-    var fields = LEAD.fields || {};
-    if (fields.name)    payload[fields.name]    = vals.name;
-    if (fields.phone)   payload[fields.phone]   = normalizePhone(vals.phone);
-    if (fields.email)   payload[fields.email]   = vals.email;
-    if (fields.consent) payload[fields.consent] = "1";
+    payload[FIELDS.name]  = vals.name;
+    payload[FIELDS.email] = vals.email;
+    payload[FIELDS.phone] = normalizePhone(vals.phone);
+    Object.keys(HIDDEN).forEach(function (k) { payload[k] = HIDDEN[k]; });
 
-    var src = leadSource();
-    if (src && fields.source) payload[fields.source] = src;
-
-    Object.keys(LEAD.extra || {}).forEach(function (k) {
-      payload[k] = LEAD.extra[k];
-    });
+    var f = document.createElement("form");
+    f.method = "post";
+    f.action = BREVO_FORM_URL.trim();
+    f.target = "lead_sink";
+    f.acceptCharset = "UTF-8";
+    f.style.display = "none";
 
     Object.keys(payload).forEach(function (k) {
       var i = document.createElement("input");
@@ -740,40 +758,7 @@ var LEAD = {
 
     document.body.appendChild(f);
     f.submit();
-    setTimeout(function () { f.remove(); }, 4000);
-  }
-
-  /* ---------- מצב "netlify": הלידים נאספים בדשבורד של Netlify ----------
-     משם אפשר לייצא CSV ולייבא אותו ל-Brevo בהמשך */
-  function sendNetlify(vals) {
-    var body = new URLSearchParams();
-    body.append("form-name", LEAD.netlifyFormName);
-    body.append("name", vals.name);
-    body.append("phone", normalizePhone(vals.phone));
-    body.append("email", vals.email);
-    body.append("consent", "1");
-    body.append("source", leadSource());
-
-    fetch("/", {
-      method: "POST",
-      headers: { "Content-Type": "application/x-www-form-urlencoded;charset=UTF-8" },
-      body: body.toString()
-    })["catch"](function (e) {
-      console.error("[מדריך צליאק] שליחת הליד ל-Netlify נכשלה:", e);
-    });
-  }
-
-  function sendLead(vals) {
-    if (LEAD.mode === "netlify") { sendNetlify(vals); return; }
-    if (LEAD.mode === "post") {
-      if (!LEAD.action) {
-        console.error('[מדריך צליאק] mode="post" אבל LEAD.action ריק — הליד לא נשלח.');
-        return;
-      }
-      sendPost(vals);
-      return;
-    }
-    console.warn('[מדריך צליאק] mode="demo" — הליד לא נשלח לשום מקום.');
+    setTimeout(function () { f.remove(); }, 5000);
   }
 
   /* ---------- פתיחת המדריך ---------- */
@@ -824,20 +809,16 @@ var LEAD = {
     document.getElementById("f-consent").classList.remove("is-bad");
   });
 
-  document.getElementById("print-btn").addEventListener("click", function () {
-    window.print();
-  });
-
-  /* ---------- הורדת המדריך כקובץ לשמירה ---------- */
+  /* ---------- הורדה והדפסה ---------- */
   var FONTS_HREF = "https://fonts.googleapis.com/css2?family=Assistant:wght@400;600;700&family=Frank+Ruhl+Libre:wght@700;900&display=swap";
-  /* שם הקובץ באותיות לטיניות בכוונה: דפדפנים מסוימים פוסלים שם קובץ בעברית
-     ומורידים אותו בשם "download" בלי סיומת, כך שהוא לא נפתח בלחיצה */
+  /* שם הקובץ באותיות לטיניות בכוונה: דפדפנים מסוימים פוסלים שם קובץ
+     בעברית ומורידים אותו בשם "download" בלי סיומת, כך שהוא לא נפתח */
   var FILENAME = "madrich-celiac-bekita.html";
 
   function buildGuideFile() {
     var clone = guide.cloneNode(true);
 
-    /* מעתיקים לקובץ את מה שהוקלד בשדות (שם התלמיד/ה, טלפונים וכו') */
+    /* מעתיקים לקובץ את מה שהוקלד בשדות */
     var live = guide.querySelectorAll("input");
     var copy = clone.querySelectorAll("input");
     for (var i = 0; i < live.length; i++) {
@@ -845,7 +826,7 @@ var LEAD = {
     }
 
     /* מסירים מהקובץ את מה ששייך לעמוד עצמו */
-    var drop = clone.querySelectorAll(".thanks, .print-bar, .print-hint");
+    var drop = clone.querySelectorAll(".thanks, .toc, .actions, .actions-hint");
     for (var j = 0; j < drop.length; j++) drop[j].parentNode.removeChild(drop[j]);
     clone.removeAttribute("hidden");
 
@@ -865,9 +846,8 @@ var LEAD = {
       '\n</body>\n</html>';
   }
 
-  document.getElementById("download-btn").addEventListener("click", function () {
-    var html = buildGuideFile();
-    var blob = new Blob([html], { type: "text/html;charset=utf-8" });
+  function downloadGuide() {
+    var blob = new Blob([buildGuideFile()], { type: "text/html;charset=utf-8" });
     var url = URL.createObjectURL(blob);
     var a = document.createElement("a");
 
@@ -883,6 +863,13 @@ var LEAD = {
       window.open(url, "_blank");
     }
     setTimeout(function () { URL.revokeObjectURL(url); }, 20000);
+  }
+
+  ["download-btn", "download-btn-top"].forEach(function (id) {
+    document.getElementById(id).addEventListener("click", downloadGuide);
+  });
+  ["print-btn", "print-btn-top"].forEach(function (id) {
+    document.getElementById(id).addEventListener("click", function () { window.print(); });
   });
 })();
 </script>
