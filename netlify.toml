@@ -1,0 +1,15 @@
+# הגדרות Netlify — כדי שחיבור הרפו יעבוד בלי שום קונפיגורציה ידנית.
+# בוחרים ב-Netlify "Import from Git", מצביעים על הרפו הזה, ולוחצים Deploy.
+
+[build]
+  # אין שלב בנייה — העמוד הוא HTML סטטי אחד
+  publish = "landing"
+  command = ""
+
+# העמוד לא מיועד לאינדוקס בגוגל; הוא מופץ דרך הלינק במאניצ'ט
+[[headers]]
+  for = "/*"
+  [headers.values]
+    X-Robots-Tag = "noindex"
+    X-Content-Type-Options = "nosniff"
+    Referrer-Policy = "strict-origin-when-cross-origin"
