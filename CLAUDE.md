@@ -18,4 +18,4 @@
 ## Project notes
 
 - Express app, entry point `src/app.js`, listens on `PORT` (default 3000).
-- Currently only a `/healthcheck` route exists (plain text, no pages yet).
+- Routes: `/` (home page, `src/pages/home.html`) and `/healthcheck` (plain text).
