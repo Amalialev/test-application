@@ -47,12 +47,20 @@
   .mark { font-size: 34px; margin-bottom: 8px; }
   h1 { font-size: 20px; margin: 0 0 4px; }
   p { color: var(--muted); font-size: 14.5px; margin: 0 0 20px; }
+  .pw { position: relative; }
   input {
     width: 100%; font: inherit; color: var(--ink);
     background: var(--bg); border: 1px solid var(--line);
-    border-radius: 10px; padding: 11px 14px;
+    border-radius: 10px; padding: 11px 44px;
     text-align: center;
   }
+  .toggle {
+    position: absolute; top: 50%; left: 6px; transform: translateY(-50%);
+    width: 36px; margin: 0; padding: 6px;
+    background: transparent; color: var(--muted);
+    border: 0; border-radius: 8px; font-size: 18px; line-height: 1;
+  }
+  .toggle:hover { filter: none; color: var(--accent); }
   input:focus, button:focus-visible { outline: 2px solid var(--accent); outline-offset: 1px; }
   button {
     width: 100%; margin-top: 12px;
@@ -69,11 +77,22 @@
     <div class="mark">🌿</div>
     <h1>יומן טיפולים</h1>
     <p>אזור זה מיועד למטפלת בלבד</p>
-    <input type="password" id="password" placeholder="סיסמה" autocomplete="current-password" autofocus>
+    <div class="pw">
+      <input type="password" id="password" placeholder="סיסמה" autocomplete="current-password" autofocus>
+      <button type="button" class="toggle" id="toggle" aria-label="הצגה או הסתרה של הסיסמה" title="הצגה / הסתרה">👁</button>
+    </div>
     <button type="submit">כניסה</button>
     <div class="err" id="err"></div>
   </form>
 <script>
+  document.getElementById("toggle").addEventListener("click", function () {
+    var pw = document.getElementById("password");
+    var show = pw.type === "password";
+    pw.type = show ? "text" : "password";
+    this.style.color = show ? "var(--accent)" : "";
+    pw.focus();
+  });
+
   document.getElementById("loginForm").addEventListener("submit", function (e) {
     e.preventDefault();
     document.getElementById("err").textContent = "";
